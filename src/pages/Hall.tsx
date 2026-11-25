@@ -7,7 +7,7 @@ import { formatTime } from '../game/state';
 import { powerInfo } from '../data/heroOptions';
 import { hallOnline, loadHall, subscribeHall, type HallEntry } from '../hall/hall';
 import { sfx, setMuted, unlockAudio } from '../audio/sound';
-import { canSpeak, isSpeechUnlocked, onSpeechUnlocked, speak, speakGlitch, unlockSpeech } from '../audio/speech';
+import { canSpeak, speak, speakGlitch, unlockSpeech } from '../audio/speech';
 
 const SINCE_KEY = 'hall-since';
 
@@ -52,21 +52,36 @@ export default function Hall() {
   const [spot, setSpot] = useState<HallEntry | null>(null);
   const [finale, setFinale] = useState(false);
   const [voice, setVoice] = useState(true);
-  const [voiceReady, setVoiceReady] = useState(() => !canSpeak() || isSpeechUnlocked());
+  // iPad: the voice needs one tap on a button that speaks out loud. Until then (or whenever an
+  // announcement stays silent) the yellow button is shown; tapping it reads the missed text.
+  const [voiceReady, setVoiceReady] = useState(() => !canSpeak());
+  const missed = useRef<string | null>(null);
   const known = useRef(new Set<string>());
   const first = useRef(true);
 
   useEffect(() => {
     setMuted(false);
     document.title = 'Hall of Heroes';
-    return onSpeechUnlocked(() => setVoiceReady(true));
+  }, []);
+
+  /** speak and watch: if the voice does not start, show the button again and remember the text */
+  const announce = useCallback((text: string) => {
+    let started = false;
+    speak(text, { onStart: () => (started = true) });
+    window.setTimeout(() => {
+      if (!started && !window.speechSynthesis.speaking) {
+        missed.current = text;
+        setVoiceReady(false);
+      }
+    }, 2500);
   }, []);
 
   const enableVoice = () => {
     unlockAudio();
-    unlockSpeech();
+    const text = missed.current ?? 'Voice on! Welcome to the Hall of Heroes.';
+    missed.current = null;
+    speak(text); // inside the tap → Safari allows it, and afterwards also the automatic announcements
     setVoiceReady(true);
-    speak('Voice on!');
   };
 
   const add = useCallback(
@@ -108,7 +123,7 @@ export default function Hall() {
   useEffect(() => {
     if (!spot) return;
     sfx.victory();
-    const s = voice ? setTimeout(() => speak(`Welcome to the Hall of Heroes, ${teamNames(spot).replace('&', 'and')}!`), 900) : 0;
+    const s = voice ? setTimeout(() => announce(`Welcome to the Hall of Heroes, ${teamNames(spot).replace('&', 'and')}!`), 900) : 0;
     const t = setTimeout(() => setSpot(null), 8000);
     return () => {
       clearTimeout(s);
@@ -158,7 +173,19 @@ export default function Hall() {
           </span>
         </div>
         <div className="hall-tools">
-          <button className="icon-btn" onClick={() => { unlockAudio(); unlockSpeech(); setVoice((v) => !v); }} title="Stimme an/aus">
+          <button
+            className="icon-btn"
+            onClick={() => {
+              unlockAudio();
+              unlockSpeech();
+              if (!voice) {
+                speak('Voice on!');
+                setVoiceReady(true);
+              }
+              setVoice((v) => !v);
+            }}
+            title="Stimme an/aus"
+          >
             {voice ? '🗣' : '🤐'}
           </button>
           <button className="icon-btn" onClick={resetView} title="Neue Ansicht (alte Teams ausblenden)">

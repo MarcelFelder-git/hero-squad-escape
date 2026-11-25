@@ -4,10 +4,13 @@ let voice: SpeechSynthesisVoice | null = null;
 
 function pickVoice() {
   if (!('speechSynthesis' in window)) return null;
-  const voices = window.speechSynthesis.getVoices();
+  // iPad/iPhone: only voices that are on the device – a voice that is not downloaded stays silent
+  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const voices = window.speechSynthesis.getVoices().filter((v) => !ios || v.localService !== false);
   voice =
+    voices.find((v) => v.lang === 'en-GB' && v.default) ||
     voices.find((v) => v.lang === 'en-GB') ||
-    voices.find((v) => v.lang.startsWith('en-GB')) ||
+    voices.find((v) => v.lang.replace('_', '-').startsWith('en-GB')) ||
     voices.find((v) => v.lang.startsWith('en')) ||
     null;
   return voice;
@@ -23,27 +26,18 @@ export const canSpeak = () => typeof window !== 'undefined' && 'speechSynthesis'
 /*
  * iPad / iPhone (Safari): speech only works after the page has spoken once INSIDE a real tap.
  * Speech that starts later from a timer or a network event (e.g. a new team in the Hall) stays silent
- * until then. So the first tap anywhere speaks a silent utterance – after that every speak() works.
+ * until then. Best effort: the first tap anywhere speaks a (quiet) utterance. Pages that speak on their
+ * own (Hall) additionally offer a button that speaks out loud and check with onStart whether it worked.
  */
 let speechUnlocked = false;
-const unlockListeners = new Set<() => void>();
-
-export const isSpeechUnlocked = () => speechUnlocked;
-export function onSpeechUnlocked(fn: () => void) {
-  unlockListeners.add(fn);
-  return () => {
-    unlockListeners.delete(fn);
-  };
-}
 
 export function unlockSpeech() {
   if (speechUnlocked || !canSpeak()) return;
-  const u = new SpeechSynthesisUtterance(' ');
+  speechUnlocked = true;
+  const u = new SpeechSynthesisUtterance('.');
   u.volume = 0;
   u.lang = 'en-GB';
   window.speechSynthesis.speak(u);
-  speechUnlocked = true;
-  unlockListeners.forEach((fn) => fn());
 }
 
 if (typeof window !== 'undefined') {
@@ -62,6 +56,8 @@ export interface SpeakOpts {
   pitch?: number;
   rate?: number;
   onEnd?: () => void;
+  /** fires when the voice really starts – if it never fires, the browser blocked the speech */
+  onStart?: () => void;
 }
 
 export function speak(text: string, opts: SpeakOpts = {}) {
@@ -88,7 +84,8 @@ export function speak(text: string, opts: SpeakOpts = {}) {
     u.onend = end;
     u.onerror = end;
   }
-  window.speechSynthesis.speak(u);
+  if (opts.onStart) u.onstart = () => opts.onStart?.();
+  synth.speak(u);
 }
 
 export const stopSpeaking = () => canSpeak() && window.speechSynthesis.cancel();
