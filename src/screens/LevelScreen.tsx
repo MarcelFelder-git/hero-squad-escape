@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ComponentType } from 're
 import { useGame } from '../game/GameContext';
 import { LEVELS, type StageKind } from '../data/levels';
 import { POINTS, gearCount, heroForSlot } from '../game/state';
+import { hintsFor } from '../data/puzzles';
 import type { Hero, PuzzleProps } from '../game/types';
 import { SceneBackdrop } from '../components/art/Scenes';
 import { Echo, Glitch } from '../components/art/Characters';
@@ -199,7 +200,7 @@ export function LevelScreen() {
 
           <div className="puzzle-body">
             <Puzzle
-              key={`${state.levelIndex}-${state.stageIndex}`}
+              key={`${state.levelIndex}-${state.stageIndex}-${state.variant}`}
               heroes={state.heroes}
               gear={gear}
               onCorrect={onCorrect}
@@ -236,7 +237,7 @@ function HintCard({ onClose }: { onClose: () => void }) {
           Stuck? ECHO can help! <span className="de">Ein Tipp kostet ein paar Punkte.</span>
         </p>
       )}
-      {stage.hints.slice(0, level).map((h, i) => (
+      {hintsFor(stage.kind, stage.hints).slice(0, level).map((h, i) => (
         <div key={i} className={`hint-text hint-${i + 1}`}>
           <b>Hint {i + 1}</b> {h}
         </div>

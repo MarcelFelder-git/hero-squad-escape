@@ -9,6 +9,7 @@ import { Burst } from '../components/ui';
 import { GEAR } from '../data/levels';
 import { sfx, setMuted, unlockAudio } from '../audio/sound';
 import { speak, speakGlitch, stopSpeaking } from '../audio/speech';
+import { Highlights, Hijack, PresenterCall } from './PresenterSurprises';
 
 const PIN = '4242';
 
@@ -33,6 +34,8 @@ const DEMO: Hero[] = [
 interface Slide {
   id: string;
   steps: number;
+  /** surprise slides have no dot in the navigation */
+  secret?: boolean;
 }
 
 const SLIDES: Slide[] = [
@@ -41,8 +44,11 @@ const SLIDES: Slide[] = [
   { id: 'glitch', steps: 3 },
   { id: 'quiz1', steps: 1 },
   { id: 'help', steps: 2 },
+  { id: 'hijack', steps: 1, secret: true },
   { id: 'mission', steps: 3 },
+  { id: 'highlights', steps: 3 },
   { id: 'quiz2', steps: 1 },
+  { id: 'call', steps: 1, secret: true },
   { id: 'ready', steps: 1 },
 ];
 
@@ -165,7 +171,11 @@ export default function Presenter() {
   const [s, setS] = useState(0);
   const [step, setStep] = useState(0);
   const [voice, setVoice] = useState(true);
+  const [shoutTick, setShoutTick] = useState(0);
+  const [hijackDone, setHijackDone] = useState(false);
   const slide = SLIDES[s];
+
+  useEffect(() => setHijackDone(false), [s]);
 
   useEffect(() => {
     setMuted(false);
@@ -195,6 +205,11 @@ export default function Presenter() {
 
   const next = useCallback(() => {
     unlockAudio();
+    if (slide.id === 'hijack' && !hijackDone) {
+      // the Glitch blocks the presentation: every Next = one "HERO SQUAD!" shout
+      setShoutTick((t) => t + 1);
+      return;
+    }
     stopSpeaking();
     sfx.whoosh();
     if (step + 1 < slide.steps) setStep(step + 1);
@@ -202,7 +217,7 @@ export default function Presenter() {
       setS(s + 1);
       setStep(0);
     }
-  }, [s, step, slide.steps]);
+  }, [s, step, slide.steps, slide.id, hijackDone]);
 
   const prev = useCallback(() => {
     stopSpeaking();
@@ -230,7 +245,7 @@ export default function Presenter() {
   const darkness = slide.id === 'glitch' && step >= 1;
 
   return (
-    <div className={`presenter slide-${slide.id} ${darkness ? 'p-dark' : ''}`}>
+    <div className={`presenter slide-${slide.id} ${darkness ? 'p-dark' : ''} ${slide.id === 'hijack' && !hijackDone ? 'p-hijacked' : ''}`}>
       <div className="p-stage" key={`${s}`}>
         {slide.id === 'title' && (
           <div className="p-title">
@@ -336,6 +351,12 @@ export default function Presenter() {
           </div>
         )}
 
+        {slide.id === 'hijack' && <Hijack tick={shoutTick} voice={voice} onDone={() => setHijackDone(true)} />}
+
+        {slide.id === 'highlights' && <Highlights step={step} hero={DEMO[1]} />}
+
+        {slide.id === 'call' && <PresenterCall voice={voice} />}
+
         {slide.id === 'quiz2' && (
           <Quiz before="A hero is always there for you. A hero is" after="." options={['reliable', 'lazy', 'shy']} explain="reliable = zuverlässig ✔" />
         )}
@@ -356,9 +377,9 @@ export default function Presenter() {
           ◀
         </button>
         <div className="p-dots">
-          {SLIDES.map((sl, i) => (
-            <i key={sl.id} className={i === s ? 'now' : i < s ? 'done' : ''} />
-          ))}
+          {SLIDES.map((sl, i) =>
+            sl.secret ? null : <i key={sl.id} className={i === s ? 'now' : i < s ? 'done' : ''} />,
+          )}
         </div>
         <button className="icon-btn" onClick={() => setVoice((v) => !v)} aria-label="Stimme an/aus" title="Vorlesen an/aus">
           {voice ? '🗣' : '🤐'}

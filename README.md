@@ -16,6 +16,13 @@ Escape-Room-Browserspiel für **Englisch Klasse 6** (Tag der offenen Tür).
 
 Die Links zu allen Seiten stehen auch im Lehrkräfte-Menü.
 
+### Überraschungen im Presenter
+
+- **Nach „Let's ask the kids for help“** kapert der Glitch die Präsentation („PRESENTATION HACKED“). Die Klasse ruft **„HERO SQUAD!“**:
+  jedes Tippen auf **Next** / den Presenter-Klicker / den gelben Button = ein Ruf (4× nötig). Optional **🎤 Mic**: dann füllt sich die Leiste, je lauter die Klasse ruft.
+- **„What's waiting for you?“** – Highlights-Folie, 2 Karten pro Klick (Verwandlung, Raketen, Anruf, Lesen im Dunkeln, Überraschungsende, Bonus-Spiel).
+- **Vor dem Countdown** ruft der Glitch live an (der rote Button weicht aus 😄) → grünen Button tippen.
+
 ## Die 8 Level
 
 | Level | Thema | Aufgaben | Belohnung |
@@ -73,6 +80,12 @@ In der Hall: 🧹 blendet alle bisherigen Teams aus (z. B. nach dem Testen).
   Aufgabe/Level überspringen, zu Level springen, Mission beenden, zurücksetzen, Links zu Presenter / Hall / Arbeitsblatt.
 - **Nächste Gruppe:** **↻** oben rechts oder „Neue Mission“ am Ende.
 - Spielstand wird automatisch gespeichert (Neuladen ist kein Problem).
+- **Aufgaben-Sets A/B:** Gleiche Aufgabentypen, andere Sätze und Wörter (nur Wörter aus der Vokabelliste). Die Sets wechseln
+  automatisch pro Gruppe und Gerät ab; im Lehrkräfte-Menü unter „Aufgaben-Set“ umstellbar.
+- **„Lock him up!“** beim Glitch: Ein Käfig fällt, der Glitch weint, Echo fragt „Is that what real heroes do?“ – kein Punktabzug,
+  die Gruppe muss sich für Freundschaft entscheiden.
+- **Bonus: Hero Run** (nach Level 8): ◀ ▶ laufen, **JUMP** springen (länger halten = höher). Auf Bugs springen, ⚡ sammeln,
+  lila Boxen von unten anstoßen, 5 Herzen, 2 Checkpoints, Ziel = Hero HQ.
 
 ## Entwicklung
 

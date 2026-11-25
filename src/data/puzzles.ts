@@ -1,8 +1,10 @@
+import * as B from './puzzlesB';
+
 // All puzzle content in one place – easy to adapt for other classes.
 // The first option in every `options` array is the correct one (options get shuffled in the UI).
 
 /* ---------- Room 1: ID Lab ---------- */
-export const WIRE_PAIRS: { en: string; de: string }[] = [
+const WIRE_PAIRS_A: { en: string; de: string }[] = [
   { en: 'reliable', de: 'zuverlässig' },
   { en: 'patient', de: 'geduldig' },
   { en: 'shy', de: 'schüchtern' },
@@ -24,12 +26,14 @@ export interface Suspect {
 }
 
 export interface SpyRound {
+  /** pronoun used in the "why not" feedback */
+  pronoun?: 'He' | 'She';
   report: string[];
   answer: string;
   suspects: Suspect[];
 }
 
-export const SPY_ROUNDS: SpyRound[] = [
+const SPY_ROUNDS_A: SpyRound[] = [
   {
     report: [
       'The spy is tall.',
@@ -70,7 +74,7 @@ export interface BugSentence {
   explain: string;
 }
 
-export const BUG_SENTENCES: BugSentence[] = [
+const BUG_SENTENCES_A: BugSentence[] = [
   {
     words: ['Captain', 'Nova', "doesn't", 'goes', 'to', 'school', 'on', 'Saturdays.'],
     bugIndex: 3,
@@ -110,7 +114,7 @@ export interface BuilderSentence {
   translation: string;
 }
 
-export const BUILDER_SENTENCES: BuilderSentence[] = [
+const BUILDER_SENTENCES_A: BuilderSentence[] = [
   {
     label: 'Positive ✔',
     tiles: ['Zara', 'helps', 'her friends', 'every day.'],
@@ -138,7 +142,7 @@ export interface VaultDial {
   options: string[]; // first = correct
 }
 
-export const VAULT_DIALS: VaultDial[] = [
+const VAULT_DIALS_A: VaultDial[] = [
   { verb: 'go', de: 'gehen', options: ['went', 'goed', 'gone', 'wented'] },
   { verb: 'see', de: 'sehen', options: ['saw', 'seed', 'sawed', 'seen'] },
   { verb: 'swim', de: 'schwimmen', options: ['swam', 'swimmed', 'swum', 'swimed'] },
@@ -150,7 +154,7 @@ export const VAULT_DIALS: VaultDial[] = [
 /** diary text: strings are plain text, objects are gaps */
 export type DiaryPart = string | { hint: string; options: string[] };
 
-export const DIARY: DiaryPart[] = [
+const DIARY_A: DiaryPart[] = [
   'Dear Diary, yesterday was a GREAT day! I ',
   { hint: 'leave', options: ['left', 'leaved', 'leave'] },
   ' my secret lab at 8 o\'clock. I ',
@@ -179,7 +183,7 @@ export interface RadioItem {
   witness: string;
 }
 
-export const RADIO_ITEMS: RadioItem[] = [
+const RADIO_ITEMS_A: RadioItem[] = [
   { question: '___ did you see in the lab?', answer: 'I saw the Glitch!', correct: 'Who', witness: 'Mrs Patel, cleaner' },
   { question: '___ did he take?', answer: 'He took the energy cores.', correct: 'What', witness: 'Sam, head student' },
   { question: '___ did he go after that?', answer: 'He went to the old moon tower.', correct: 'Where', witness: 'Kiki, pizza driver' },
@@ -190,7 +194,7 @@ export const RADIO_ITEMS: RadioItem[] = [
   { question: '___ money did he pay for the pizza?', answer: 'Twelve pounds. No tip!', correct: 'How much', witness: 'Kiki, pizza driver' },
 ];
 
-export const INTERCEPTED_MESSAGE = [
+const INTERCEPTED_MESSAGE_A = [
   'TO: all my robots',
   'FROM: The Glitch',
   '',
@@ -206,7 +210,7 @@ export interface FrequencyQuestion {
   answer: number;
 }
 
-export const FREQUENCY_QUESTIONS: FrequencyQuestion[] = [
+const FREQUENCY_QUESTIONS_A: FrequencyQuestion[] = [
   { q: 'How many cores did the Glitch take yesterday?', answer: 4 },
   { q: 'How many robots are guarding the main gate?', answer: 2 },
   { q: "When must the robots bring the cores? At … o'clock.", answer: 9 },
@@ -219,7 +223,7 @@ export interface BossQuestion {
   topic: string;
 }
 
-export const BOSS_QUESTIONS: BossQuestion[] = [
+const BOSS_QUESTIONS_A: BossQuestion[] = [
   { text: "My best friend ___ always there for me. She's so reliable!", options: ['is', 'are', 'be'], topic: 'Simple present' },
   { text: 'The Glitch ___ have any friends.', options: ["doesn't", "don't", "isn't"], topic: 'Simple present: negative' },
   { text: '___ you want to be a hero?', options: ['Do', 'Does', 'Are'], topic: 'Simple present: question' },
@@ -237,7 +241,7 @@ export interface GateGap {
   options: string[]; // first = correct
 }
 
-export const GATE_GAPS: GateGap[] = [
+const GATE_GAPS_A: GateGap[] = [
   { before: 'Our coach is 1.95 m. He is very ', after: '.', options: ['tall', 'shy', 'patient'] },
   { before: "Why can't I have a pet? Everybody ", after: ' has a pet!', options: ['else', 'nobody', 'yourself'] },
   { before: 'Go away, Glitch! Leave us ', after: '!', options: ['alone', 'left', 'right'] },
@@ -245,3 +249,41 @@ export const GATE_GAPS: GateGap[] = [
 ];
 
 export const GATE_PASSWORD = 'TEAM';
+
+
+/* ---------- task sets: A (original) and B (new words) ---------- */
+// `export let` = live bindings: after applyVariant() every importer sees the new set.
+export let WIRE_PAIRS = WIRE_PAIRS_A;
+export let SPY_ROUNDS = SPY_ROUNDS_A;
+export let BUG_SENTENCES = BUG_SENTENCES_A;
+export let BUILDER_SENTENCES = BUILDER_SENTENCES_A;
+export let VAULT_DIALS = VAULT_DIALS_A;
+export let DIARY = DIARY_A;
+export let RADIO_ITEMS = RADIO_ITEMS_A;
+export let INTERCEPTED_MESSAGE = INTERCEPTED_MESSAGE_A;
+export let FREQUENCY_QUESTIONS = FREQUENCY_QUESTIONS_A;
+export let BOSS_QUESTIONS = BOSS_QUESTIONS_A;
+export let GATE_GAPS = GATE_GAPS_A;
+export let currentVariant = 0;
+
+export function applyVariant(v: number) {
+  if (v === currentVariant) return;
+  currentVariant = v;
+  const b = v === 1;
+  WIRE_PAIRS = b ? B.WIRE_PAIRS_B : WIRE_PAIRS_A;
+  SPY_ROUNDS = b ? B.SPY_ROUNDS_B : SPY_ROUNDS_A;
+  BUG_SENTENCES = b ? B.BUG_SENTENCES_B : BUG_SENTENCES_A;
+  BUILDER_SENTENCES = b ? B.BUILDER_SENTENCES_B : BUILDER_SENTENCES_A;
+  VAULT_DIALS = b ? B.VAULT_DIALS_B : VAULT_DIALS_A;
+  DIARY = b ? B.DIARY_B : DIARY_A;
+  RADIO_ITEMS = b ? B.RADIO_ITEMS_B : RADIO_ITEMS_A;
+  INTERCEPTED_MESSAGE = b ? B.INTERCEPTED_MESSAGE_B : INTERCEPTED_MESSAGE_A;
+  FREQUENCY_QUESTIONS = b ? B.FREQUENCY_QUESTIONS_B : FREQUENCY_QUESTIONS_A;
+  BOSS_QUESTIONS = b ? B.BOSS_QUESTIONS_B : BOSS_QUESTIONS_A;
+  GATE_GAPS = b ? B.GATE_GAPS_B : GATE_GAPS_A;
+}
+
+/** hints of a stage for the current task set */
+export function hintsFor(kind: string, hints: [string, string]): [string, string] {
+  return currentVariant === 1 && B.HINTS_B[kind] ? B.HINTS_B[kind] : hints;
+}

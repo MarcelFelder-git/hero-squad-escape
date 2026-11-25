@@ -40,6 +40,7 @@ export function initialState(muted = false): GameState {
     viaQr: false,
     hallSent: false,
     bonusHighscore: 0,
+    variant: 0,
   };
 }
 
@@ -49,7 +50,7 @@ export function loadState(): GameState {
     if (!raw) return initialState();
     const s = JSON.parse(raw) as GameState;
     if (s.version !== VERSION || !s.phase || s.levelStats?.length !== LEVELS.length) return initialState();
-    return { ...s, toast: null };
+    return { ...s, variant: s.variant ?? 0, toast: null };
   } catch {
     return initialState();
   }
@@ -78,7 +79,8 @@ export type Action =
   | { type: 'UPDATE_HERO'; index: number; hero: Hero }
   | { type: 'NEXT_HERO' }
   | { type: 'PREV_HERO' }
-  | { type: 'START_MISSION' }
+  | { type: 'START_MISSION'; variant?: number }
+  | { type: 'SET_VARIANT'; variant: number }
   | { type: 'EVENT_DONE' }
   | { type: 'INTRO_DONE' }
   | { type: 'CORRECT'; points?: number }
@@ -167,11 +169,15 @@ export function reducer(s: GameState, a: Action): GameState {
           hintsUsed: 0,
           skipped: 0,
           hallSent: false,
+          variant: a.variant ?? s.variant,
           levelStats: emptyStats(),
           heroes: s.heroes.map((h) => ({ ...h, profile: undefined })),
         },
         0,
       );
+
+    case 'SET_VARIANT':
+      return { ...s, variant: a.variant };
 
     case 'EVENT_DONE':
       return { ...s, levelStep: 'intro' };
@@ -271,10 +277,10 @@ export function reducer(s: GameState, a: Action): GameState {
       return { ...s, muted: !s.muted };
 
     case 'RESET':
-      return initialState(s.muted);
+      return { ...initialState(s.muted), variant: s.variant };
 
     case 'CLEAR_TOAST':
-      return { ...s, toast: null };
+      return { ...s, variant: s.variant ?? 0, toast: null };
   }
 }
 
@@ -327,3 +333,15 @@ export const formatTime = (ms: number) => {
 export const heroForSlot = (heroes: Hero[], slot: number) => heroes[slot % Math.max(1, heroes.length)];
 
 export { powerInfo };
+
+/** Alternate the task set for every new group on this device (first group: set B). */
+export function nextVariant(): number {
+  const last = localStorage.getItem('hero-variant-last');
+  const v = last === null ? 1 : last === '1' ? 0 : 1;
+  try {
+    localStorage.setItem('hero-variant-last', String(v));
+  } catch {
+    /* ignore */
+  }
+  return v;
+}

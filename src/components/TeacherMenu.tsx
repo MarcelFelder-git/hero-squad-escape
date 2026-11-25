@@ -1,6 +1,7 @@
 import { useGame } from '../game/GameContext';
 import { LEVELS } from '../data/levels';
 import { Modal } from './ui';
+import { hintsFor } from '../data/puzzles';
 
 export function TeacherMenu({ onClose }: { onClose: () => void }) {
   const { state, dispatch } = useGame();
@@ -24,7 +25,7 @@ export function TeacherMenu({ onClose }: { onClose: () => void }) {
         <div className="teacher-box">
           <b>Aktuell:</b> Level {state.levelIndex + 1} „{level.name}“ – {stage.title}
           <div className="teacher-solution">
-            <b>Lösungshilfe:</b> {stage.hints[1]}
+            <b>Lösungshilfe:</b> {hintsFor(stage.kind, stage.hints)[1]}
           </div>
         </div>
       )}
@@ -52,6 +53,26 @@ export function TeacherMenu({ onClose }: { onClose: () => void }) {
         {LEVELS.map((l, i) => (
           <button key={l.id} className="btn btn-ghost" onClick={() => act(() => dispatch({ type: 'JUMP_LEVEL', level: i }))}>
             {i + 1}. {l.name}
+          </button>
+        ))}
+      </div>
+
+      <h3>Aufgaben-Set</h3>
+      <p className="muted small">
+        Set A = Wörter vom ersten Testlauf, Set B = neue Wörter und Sätze (gleiche Rätsel). Jede neue Gruppe bekommt automatisch
+        abwechselnd A/B. Wechsel startet die aktuelle Aufgabe neu.
+      </p>
+      <div className="teacher-grid">
+        {[0, 1].map((v) => (
+          <button
+            key={v}
+            className={`btn ${state.variant === v ? 'btn-yellow' : 'btn-ghost'}`}
+            onClick={() => {
+              localStorage.setItem('hero-variant-last', String(v));
+              dispatch({ type: 'SET_VARIANT', variant: v });
+            }}
+          >
+            {state.variant === v ? '✔ ' : ''}Set {v === 0 ? 'A' : 'B'}
           </button>
         ))}
       </div>

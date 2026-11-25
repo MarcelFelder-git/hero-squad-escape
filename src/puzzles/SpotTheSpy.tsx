@@ -4,8 +4,8 @@ import { SPY_ROUNDS, type Suspect } from '../data/puzzles';
 import { Person } from '../components/art/Person';
 import { SpeakButton } from '../components/ui';
 
-function whyNot(s: Suspect, spy: Suspect): string {
-  const he = spy.id <= 'd' ? 'He' : 'She';
+function whyNot(s: Suspect, spy: Suspect, pronoun?: 'He' | 'She'): string {
+  const he = pronoun ?? (spy.id <= 'd' ? 'He' : 'She');
   const n = s.name;
   if (s.tall !== spy.tall) return `${n} is ${s.tall ? 'tall' : 'short'}. The spy is ${spy.tall ? 'tall' : 'short'}.`;
   if (s.hairStyle !== spy.hairStyle) return `${n} has ${s.hairStyle} hair. ${he} has ${spy.hairStyle} hair.`;
@@ -34,7 +34,7 @@ export function SpotTheSpy({ onCorrect, onWrong, onSolved }: PuzzleProps) {
         } else onSolved();
       }, 1400);
     } else {
-      setWrong({ ...wrong, [s.id]: whyNot(s, spy) });
+      setWrong({ ...wrong, [s.id]: whyNot(s, spy, r.pronoun) });
       onWrong();
     }
   };

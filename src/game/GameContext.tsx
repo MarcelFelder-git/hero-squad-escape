@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useReducer, type Dispatch, type R
 import { loadState, reducer, saveState, type Action } from './state';
 import type { GameState } from './types';
 import { setMuted } from '../audio/sound';
+import { applyVariant } from '../data/puzzles';
 
 interface Ctx {
   state: GameState;
@@ -12,6 +13,8 @@ const GameCtx = createContext<Ctx | null>(null);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, undefined, loadState);
+  // switch task set A/B before any puzzle renders
+  applyVariant(state.variant);
 
   useEffect(() => {
     saveState(state);

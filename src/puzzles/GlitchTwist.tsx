@@ -28,15 +28,33 @@ export function GlitchTwist({ heroes, gear, onCorrect, onWrong, onSolved }: Puzz
   const item = TALK[Math.min(t, TALK.length - 1)];
   const options = useMemo(() => shuffle(item.options), [item]);
 
+  const [cage, setCage] = useState<'none' | 'down' | 'up'>('none');
+  const [echoLine, setEchoLine] = useState(false);
+
   const choose = (friend: boolean) => {
     if (friend) {
       sfx.power();
-      setPhase('talk');
+      if (cage === 'down') {
+        // lift the cage first, then talk
+        setCage('up');
+        window.setTimeout(() => {
+          setCage('none');
+          setPhase('talk');
+        }, 700);
+      } else setPhase('talk');
     } else {
-      sfx.glitch();
+      if (cage === 'down') return;
+      // fun moment: a cage drops on the Glitch – he is very sad. No penalty, but heroes must think again.
       setLockTry(true);
+      setEchoLine(false);
+      setCage('down');
+      window.setTimeout(() => sfx.clang(), 450);
+      sfx.sad();
+      window.setTimeout(() => speakGlitch('I knew it. Nobody wants to be my friend.'), 900);
+      window.setTimeout(() => setEchoLine(true), 2600);
     }
   };
+  const sad = cage === 'down' && phase === 'confess';
 
   const say = (o: string) => {
     if (bad.includes(o)) return;
@@ -63,9 +81,19 @@ export function GlitchTwist({ heroes, gear, onCorrect, onWrong, onSolved }: Puzz
             <HeroAvatar key={i} hero={h} gear={gear} className="twist-hero" />
           ))}
         </div>
-        <div className={`twist-glitch ${phase === 'friends' ? 'befriended' : ''}`}>
+        <div className={`twist-glitch ${phase === 'friends' ? 'befriended' : ''} ${sad ? 'is-sad' : ''}`}>
           {phase === 'friends' && <div className="heart-burst">💛</div>}
-          <Glitch className="twist-glitch-svg" mood={phase === 'friends' ? 'happy' : 'defeated'} />
+          <Glitch className="twist-glitch-svg" mood={phase === 'friends' ? 'happy' : sad ? 'sad' : 'defeated'} />
+          {cage !== 'none' && (
+            <svg className={`twist-cage cage-${cage}`} viewBox="0 0 120 160" aria-hidden="true">
+              <rect x={4} y={4} width={112} height={12} rx={4} fill="#6c757d" stroke="#141018" strokeWidth={4} />
+              <rect x={4} y={148} width={112} height={10} rx={3} fill="#6c757d" stroke="#141018" strokeWidth={4} />
+              {[14, 32, 50, 68, 86, 104].map((x) => (
+                <rect key={x} x={x - 3} y={16} width={6} height={132} fill="#adb5bd" stroke="#141018" strokeWidth={2.5} />
+              ))}
+              <path d="M50,4 q10,-14 20,0" fill="none" stroke="#141018" strokeWidth={4} />
+            </svg>
+          )}
         </div>
       </div>
 
@@ -74,7 +102,8 @@ export function GlitchTwist({ heroes, gear, onCorrect, onWrong, onSolved }: Puzz
           <div className="bubble bubble-villain">
             {CONFESSION} <SpeakButton text={CONFESSION} small />
           </div>
-          {lockTry && (
+          {sad && <div className="bubble bubble-villain sad-bubble pop-in">… I knew it. Nobody wants to be my friend. 😢</div>}
+          {lockTry && echoLine && (
             <div className="echo-line pop-in">
               <Echo className="mini-echo" talking />
               <span>

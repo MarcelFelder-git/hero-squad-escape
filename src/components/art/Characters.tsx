@@ -1,13 +1,20 @@
 const INK = '#141018';
 
 /** The villain: a glitchy robot with a TV-screen face. */
-export function Glitch({ className, mood = 'evil' }: { className?: string; mood?: 'evil' | 'angry' | 'defeated' | 'happy' }) {
+export function Glitch({ className, mood = 'evil' }: { className?: string; mood?: 'evil' | 'angry' | 'defeated' | 'happy' | 'sad' }) {
   const face = (dx: number, color: string, op = 1) => (
     <g transform={`translate(${dx} 0)`} opacity={op}>
       {mood === 'happy' ? (
         <>
           <path d="M46,58 q7,-9 14,0 M80,58 q7,-9 14,0" fill="none" stroke={color} strokeWidth={5} />
           <path d="M50,74 q20,18 40,0" fill="none" stroke={color} strokeWidth={5} />
+        </>
+      ) : mood === 'sad' ? (
+        <>
+          <path d="M45,50 l15,6 M95,50 l-15,6" stroke={color} strokeWidth={4} />
+          <rect x={48} y={58} width={10} height={8} fill={color} />
+          <rect x={82} y={58} width={10} height={8} fill={color} />
+          <path d="M55,86 q15,-12 30,0" fill="none" stroke={color} strokeWidth={5} />
         </>
       ) : mood === 'defeated' ? (
         <>
@@ -46,6 +53,12 @@ export function Glitch({ className, mood = 'evil' }: { className?: string; mood?
         {face(2, '#00f5d4', 0.8)}
         {face(0, '#39ff14')}
       </g>
+      {mood === 'sad' && (
+        <g className="glitch-tears">
+          <path className="tear t1" d="M53,68 q-4,8 0,11 q4,-3 0,-11z" fill="#4cc9f0" />
+          <path className="tear t2" d="M87,68 q-4,8 0,11 q4,-3 0,-11z" fill="#4cc9f0" />
+        </g>
+      )}
       <g className="scanlines" opacity={0.25}>
         {[36, 44, 52, 60, 68, 76, 84].map((y) => (
           <rect key={y} x={34} y={y} width={72} height={2} fill="#ffffff" />

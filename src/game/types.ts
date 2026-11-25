@@ -69,6 +69,8 @@ export interface GameState {
   viaQr: boolean;
   hallSent: boolean;
   bonusHighscore: number;
+  /** task set: 0 = A (original), 1 = B (new words) */
+  variant: number;
 }
 
 /** Props every puzzle component receives. */

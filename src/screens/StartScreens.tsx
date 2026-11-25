@@ -8,6 +8,7 @@ import { SpeakButton } from '../components/ui';
 import { sfx, unlockAudio } from '../audio/sound';
 import { powerInfo } from '../data/heroOptions';
 import { entryViaQr } from '../route';
+import { nextVariant } from '../game/state';
 
 function AccessGranted({ onDone }: { onDone: () => void }) {
   useEffect(() => {
@@ -165,7 +166,7 @@ export function Briefing() {
           onClick={() => {
             unlockAudio();
             sfx.unlock();
-            dispatch({ type: 'START_MISSION' });
+            dispatch({ type: 'START_MISSION', variant: nextVariant() });
           }}
         >
           🚀 Mission starten!

@@ -79,6 +79,31 @@ function noise(dur: number, vol = 0.08, delay = 0, hp = 800) {
 }
 
 export const sfx = {
+  jump() {
+    tone({ freq: 330, to: 880, dur: 0.14, type: 'square', vol: 0.05 });
+  },
+  coin() {
+    tone({ freq: 988, dur: 0.06, type: 'square', vol: 0.05 });
+    tone({ freq: 1319, dur: 0.18, type: 'square', vol: 0.05, delay: 0.06 });
+  },
+  stomp() {
+    tone({ freq: 400, to: 120, dur: 0.12, type: 'square', vol: 0.08 });
+    noise(0.08, 0.06, 0, 1200);
+  },
+  bump() {
+    tone({ freq: 140, to: 90, dur: 0.08, type: 'triangle', vol: 0.1 });
+  },
+  clang() {
+    tone({ freq: 220, dur: 0.5, type: 'square', vol: 0.08 });
+    tone({ freq: 233, dur: 0.5, type: 'square', vol: 0.06 });
+    noise(0.3, 0.1, 0, 600);
+  },
+  sad() {
+    [392, 370, 349, 330].forEach((f, i) => tone({ freq: f, to: i === 3 ? 260 : undefined, dur: i === 3 ? 0.9 : 0.32, type: 'sawtooth', vol: 0.05, delay: 0.5 + i * 0.36 }));
+  },
+  hurt() {
+    tone({ freq: 600, to: 150, dur: 0.35, type: 'sawtooth', vol: 0.07 });
+  },
   click() {
     tone({ freq: 660, dur: 0.05, type: 'triangle', vol: 0.08 });
   },
