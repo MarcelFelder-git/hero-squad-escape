@@ -98,7 +98,7 @@ export function BossBattle({ heroes, gear, onCorrect, onWrong, onSolved }: Puzzl
           </div>
         </div>
       )}
-      {defeated && <div className="explain pop-in big">💥 K.O.! The Glitch is defeated! Now open the gate!</div>}
+      {defeated && <div className="explain pop-in big">💥 K.O.! The Glitch is defeated! … But wait – he wants to say something.</div>}
     </div>
   );
 }

@@ -11,6 +11,9 @@ create table if not exists public.hall (
 
 alter table public.hall enable row level security;
 
+-- newer Supabase projects need an explicit grant for the website key
+grant select, insert on public.hall to anon;
+
 -- the game (anon key) may only add and read entries – no update / delete
 drop policy if exists "hall insert" on public.hall;
 create policy "hall insert" on public.hall for insert to anon with check (true);

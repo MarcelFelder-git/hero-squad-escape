@@ -7,7 +7,7 @@ import { sfx } from '../audio/sound';
 import { speakGlitch } from '../audio/speech';
 
 const CONFESSION =
-  "Wait, heroes! Please listen. I took your cores because … nobody wanted to be my friend. At Hero School everybody laughed at me. I was always alone.";
+  "Wait, heroes! Please listen. I took your superpowers because … nobody wanted to be my friend. At Hero School everybody laughed at me. I was always alone.";
 
 const TALK = [
   {
@@ -65,7 +65,7 @@ export function GlitchTwist({ heroes, gear, onCorrect, onWrong, onSolved }: Puzz
       else {
         sfx.transform();
         setPhase('friends');
-        speakGlitch('Thank you, my friends! Here are your power cores. And I will help you open the gate!');
+        speakGlitch('Thank you, my friends! Here are your superpowers. Hero City is safe again!');
       }
     } else {
       setBad([...bad, o]);
@@ -139,7 +139,7 @@ export function GlitchTwist({ heroes, gear, onCorrect, onWrong, onSolved }: Puzz
       {phase === 'friends' && (
         <div className="twist-box pop-in">
           <div className="bubble bubble-villain friendly">
-            Thank you, my friends! Here are your power cores. And I will help you open the gate! 💛
+            Thank you, my friends! Here are your superpowers. Hero City is safe again! 💛
           </div>
           <p className="instr-de">Echte Helden machen aus Gegnern Freunde. 🦸</p>
           <button className="btn btn-big btn-yellow" onClick={onSolved}>

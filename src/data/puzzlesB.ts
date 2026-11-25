@@ -6,7 +6,6 @@ import type {
   BuilderSentence,
   DiaryPart,
   FrequencyQuestion,
-  GateGap,
   RadioItem,
   SpyRound,
   VaultDial,
@@ -48,55 +47,55 @@ export const SPY_ROUNDS_B: SpyRound[] = [
 
 export const BUG_SENTENCES_B: BugSentence[] = [
   {
-    words: ['My', 'best', 'friend', 'wear', 'sunglasses', 'every', 'day.'],
+    words: ['Last', 'summer', 'I', 'swimmed', 'in', 'the', 'sea.'],
     bugIndex: 3,
-    options: ['wears', 'wearing', 'wore'],
-    explain: 'he/she/it → -s: my friend wears',
+    options: ['swam', 'swim', 'swims'],
+    explain: 'swim → swam (irregular verb)',
   },
   {
-    words: ['Does', 'Tom', 'laughs', 'at', 'the', 'Glitch?'],
+    words: ['Did', 'Sara', 'finished', 'her', 'homework?'],
     bugIndex: 2,
-    options: ['laugh', 'laughing', 'laughed'],
-    explain: 'Does + infinitive: Does Tom laugh …?',
+    options: ['finish', 'finishing', 'finishes'],
+    explain: 'Did + normal verb: Did Sara finish …?',
   },
   {
-    words: ['Sara', 'and', 'Ben', "doesn't", 'like', 'spiders.'],
-    bugIndex: 3,
-    options: ["don't", "isn't", "aren't"],
-    explain: "they (Sara and Ben) → don't",
+    words: ['We', "didn't", 'went', 'to', 'school', 'yesterday.'],
+    bugIndex: 2,
+    options: ['go', 'goes', 'going'],
+    explain: "didn't + normal verb: didn't go",
   },
   {
-    words: ['Do', 'the', 'head', 'student', 'help', 'you?'],
-    bugIndex: 0,
-    options: ['Does', 'Is', 'Are'],
-    explain: 'he/she (the head student) → Does',
+    words: ['The', 'Glitch', 'were', 'very', 'shy', 'at', 'school.'],
+    bugIndex: 2,
+    options: ['was', 'are', 'be'],
+    explain: 'he/she/it (the Glitch) → was',
   },
   {
-    words: ['Nova', "don't", 'think', 'of', 'her', 'old', 'friends.'],
-    bugIndex: 1,
-    options: ["doesn't", "isn't", "aren't"],
-    explain: "he/she/it → doesn't",
+    words: ['Yesterday', 'Leo', 'save', 'a', 'cat.'],
+    bugIndex: 2,
+    options: ['saved', 'saves', 'saving'],
+    explain: 'yesterday → simple past: saved (regular: + -ed)',
   },
 ];
 
 export const BUILDER_SENTENCES_B: BuilderSentence[] = [
   {
     label: 'Positive ✔',
-    tiles: ['Leo', 'wears', 'sunglasses', 'every day.'],
-    trap: 'wear',
-    translation: 'Leo trägt jeden Tag eine Sonnenbrille.',
+    tiles: ['Leo', 'wore', 'sunglasses', 'yesterday.'],
+    trap: 'weared',
+    translation: 'Leo trug gestern eine Sonnenbrille.',
   },
   {
     label: 'Negative ✖',
-    tiles: ['A hero', "doesn't", 'leave', 'friends', 'alone.'],
-    trap: 'leaves',
-    translation: 'Ein Held lässt Freunde nicht allein.',
+    tiles: ['Nova', "didn't", 'leave', 'her friends', 'alone.'],
+    trap: 'left',
+    translation: 'Nova ließ ihre Freunde nicht allein.',
   },
   {
     label: 'Question ?',
-    tiles: ['Does', 'the Glitch', 'have', 'a best friend?'],
-    trap: 'Do',
-    translation: 'Hat der Glitch einen besten Freund?',
+    tiles: ['Did', 'the Glitch', 'have', 'a best friend?'],
+    trap: 'had',
+    translation: 'Hatte der Glitch einen besten Freund?',
   },
 ];
 
@@ -143,22 +142,22 @@ export const INTERCEPTED_MESSAGE_B = [
   'FROM: The Glitch',
   '',
   "Robots, listen! Last night 5 heroes were at the HQ, but they didn't hear us.",
-  'We took 3 power cores. I put them in my secret lab under the old moon tower.',
+  'We took 3 superpowers. I put them in my secret lab under the old moon tower.',
   "1 robot is watching the lab. Don't leave it alone!",
   "Tomorrow we go to the school at 7 o'clock. Don't be late!",
-  '— G. (With 2 more cores I am the king of Hero City!)',
+  '— G. (With 2 more superpowers I am the king of Hero City!)',
 ];
 
 export const FREQUENCY_QUESTIONS_B: FrequencyQuestion[] = [
-  { q: 'How many cores did the robots take?', answer: 3 },
+  { q: 'How many superpowers did the robots take?', answer: 3 },
   { q: 'How many robots are watching the lab?', answer: 1 },
   { q: "When do they go to the school? At … o'clock.", answer: 7 },
 ];
 
 export const BOSS_QUESTIONS_B: BossQuestion[] = [
-  { text: 'My friends ___ always there for me.', options: ['are', 'is', 'be'], topic: 'Simple present' },
-  { text: 'Leo ___ wear glasses. He wears sunglasses.', options: ["doesn't", "don't", "isn't"], topic: 'Simple present: negative' },
-  { text: '___ your best friend have curly hair?', options: ['Does', 'Do', 'Is'], topic: 'Simple present: question' },
+  { text: '___ you at school yesterday? – Yes, I was.', options: ['Were', 'Was', 'Did'], topic: 'Simple past: was / were' },
+  { text: 'Leo ___ wear his glasses yesterday.', options: ["didn't", "doesn't", "wasn't"], topic: 'Simple past: negative' },
+  { text: 'What ___ you eat for breakfast? – I ate eggs.', options: ['did', 'do', 'were'], topic: 'Simple past: question' },
   { text: 'Last week the heroes ___ a dog in the river.', options: ['saved', 'save', 'saves'], topic: 'Simple past: regular' },
   { text: 'Yesterday I ___ my bike to school.', options: ['rode', 'rided', 'ride'], topic: 'Simple past: irregular' },
   { text: '___ you hear the alarm last night?', options: ['Did', 'Do', 'Were'], topic: 'Simple past: question' },
@@ -167,19 +166,16 @@ export const BOSS_QUESTIONS_B: BossQuestion[] = [
   { text: 'Ouch! I ___ my hand yesterday.', options: ['hurt', 'hurted', 'hurts'], topic: 'Simple past: irregular' },
 ];
 
-export const GATE_GAPS_B: GateGap[] = [
-  { before: 'I often ', after: ' of my old friends.', options: ['think', 'laugh', 'leave'] },
-  { before: "Why can't I have a pet? ", after: ' else has a pet!', options: ['Everybody', 'Yourself', 'Left'] },
-  { before: 'Yesterday I ', after: ' a huge pizza.', options: ['ate', 'eat', 'eated'] },
-  { before: 'At night you can see the ', after: ' over the sea.', options: ['moon', 'mistake', 'life'] },
-];
-
 /** hints that mention set-A answers get a set-B version */
 export const HINTS_B: Record<string, [string, string]> = {
   wires: ['"links" and "left" both start with L!', 'sunglasses = Sonnenbrille · straight = glatt · mistake = Fehler · right = rechts'],
+  bughunt: [
+    'Look at the verbs! yesterday / last … → you need the simple past.',
+    "swim → swam · Did … finish? · didn't go · the Glitch → was · yesterday → saved",
+  ],
   builder: [
-    'Statements: who + verb + rest. Questions start with Do or Does.',
-    '"doesn\'t leave" – not "doesn\'t leaves". "Does … have" – not "Does … has".',
+    'Statements: who + verb + rest. Questions start with Did.',
+    '"didn\'t leave" – not "didn\'t left". "Did … have" – not "Did … had".',
   ],
   vault: [
     'Only ONE verb is regular (-ed). The others are irregular – check the 📖 Glossary!',
@@ -191,7 +187,6 @@ export const HINTS_B: Record<string, [string, string]> = {
   ],
   frequency: [
     'Careful – there are MORE numbers in the message than you need.',
-    "They took 3 cores. 1 robot is watching the lab. They go to the school at 7 o'clock.",
+    "They took 3 superpowers. 1 robot is watching the lab. They go to the school at 7 o'clock.",
   ],
-  finalgate: ['The Glitch never had one. Every hero squad needs one. 4 letters!', 'think · Everybody · ate · moon → T-E-A-M'],
 };

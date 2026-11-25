@@ -184,7 +184,7 @@ export function HeroRun({ heroes, onClose, onScore, best }: { heroes: Hero[]; on
                   <span>◀ ▶ run</span>
                   <span>JUMP = jump</span>
                   <span>🐞 jump on bugs</span>
-                  <span>⚡ collect cores</span>
+                  <span>⚡ collect power</span>
                   <span>🟪 hit power boxes from below</span>
                 </div>
               </>

@@ -42,9 +42,9 @@ export function TitleScreen() {
           <span className="t2">Escape from The Glitch</span>
         </h1>
         <p className="title-sub">
-          The Glitch has stolen the power cores – now all the heroes are <b>normal people</b>!
+          The Glitch has stolen the superpowers – now all the heroes are <b>normal people</b>!
           <br />
-          <span className="de">Werdet in 8 Leveln vom normalen Kind zum Superhelden – mit euren Englisch-Superkräften!</span>
+          <span className="de">Werdet in 8 Leveln vom normalen Kind zum Superhelden und holt die Superkräfte zurück!</span>
         </p>
         <button
           className="btn btn-big btn-yellow pulse-btn"
@@ -111,8 +111,8 @@ export function Briefing() {
   const names = state.heroes.map((h) => h.name);
   const nameList = names.length === 1 ? names[0] : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
   const glitchLine =
-    "Mwahaha! I am THE GLITCH! Yesterday I took all the power cores of Hero City. Now all the heroes are normal people. Nobody can stop me – nobody!";
-  const echoLine = `Hello, ${nameList}! I am ECHO, the HQ computer. You are normal kids now – but you can become heroes! Finish 8 levels with your English power. After every level a rocket brings you new hero gear!`;
+    "Mwahaha! I am THE GLITCH! Yesterday I took all the superpowers of Hero City. Now all the heroes are normal people. Nobody can stop me – nobody!";
+  const echoLine = `Hello, ${nameList}! I am ECHO, the HQ computer. You are normal kids now – but you can become heroes! Finish 8 levels and get the superpowers back. After every level a rocket brings you new hero gear!`;
 
   return (
     <div className="screen briefing-screen">

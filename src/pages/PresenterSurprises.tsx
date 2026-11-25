@@ -122,7 +122,7 @@ export function Scan({ voice }: { voice: boolean }) {
   );
 }
 
-const OATH = ['I am clever and brave.', 'I always help my friends.', 'I speak English – and I never give up!'];
+const OATH = ['I am clever and brave.', 'I always help my friends.', 'And I never, never give up!'];
 
 /** Story beat + audience moment: everybody stands up and repeats the hero oath after Echo. */
 export function Oath({ step, heroes, voice }: { step: number; heroes: Hero[]; voice: boolean }) {
@@ -136,7 +136,7 @@ export function Oath({ step, heroes, voice }: { step: number; heroes: Hero[]; vo
     }
     if (step > OATH.length) {
       sfx.transform();
-      if (voice) window.setTimeout(() => speak('Welcome, hero recruits! Now get the power cores back!'), 700);
+      if (voice) window.setTimeout(() => speak('Welcome, hero recruits! Now get the superpowers back!'), 700);
     }
   }, [step, voice]);
 
@@ -148,8 +148,8 @@ export function Oath({ step, heroes, voice }: { step: number; heroes: Hero[]; vo
         <div className="oath-intro pop-in">
           <Echo className="pr-echo" talking />
           <div className="bubble bubble-echo">
-            Everybody, <b>stand up</b>! Raise your <b>right hand</b> and repeat after me!
-            <div className="de">Alle aufstehen, rechte Hand hoch und nachsprechen!</div>
+            Everybody, <b>stand up</b>! Raise your <b>left hand</b> and repeat after me!
+            <div className="de">Alle aufstehen, linke Hand hoch und nachsprechen!</div>
           </div>
         </div>
       )}
@@ -171,9 +171,9 @@ export function Oath({ step, heroes, voice }: { step: number; heroes: Hero[]; vo
       </div>
       <div className="oath-meter">
         <i />
-        <span>ENGLISH POWER {done ? 100 : Math.round((lines / OATH.length) * 100)}%</span>
+        <span>HERO POWER {done ? 100 : Math.round((lines / OATH.length) * 100)}%</span>
       </div>
-      {done && <div className="oath-badge pop-in">Now get the power cores back! 🔋</div>}
+      {done && <div className="oath-badge pop-in">Now get the superpowers back! ⚡</div>}
     </div>
   );
 }

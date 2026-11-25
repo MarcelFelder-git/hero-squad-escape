@@ -20,8 +20,7 @@ export type StageKind =
   | 'gaptext'
   | 'boss'
   | 'twist'
-  | 'profile'
-  | 'finalgate';
+  | 'profile';
 
 export interface TeamRole {
   /** player slot 0..2 – wraps around when there are fewer players */
@@ -29,9 +28,16 @@ export interface TeamRole {
   task: string;
 }
 
+/** What the kids are practising right now – shown on every task so they connect it with the theory. */
+export interface GrammarNote {
+  topic: string;
+  rule: string;
+}
+
 export interface StageMeta {
   kind: StageKind;
   title: string;
+  grammar: GrammarNote;
   instruction: string;
   instructionDe: string;
   hints: [string, string];
@@ -87,6 +93,7 @@ export const LEVELS: LevelMeta[] = [
     stages: [
       {
         kind: 'wires',
+        grammar: { topic: 'Vocabulary: friends and heroes', rule: 'Words for people: how they look and what they are like.' },
         title: 'Repair the ID scanner',
         instruction: 'Connect the English words with the German words.',
         instructionDe: 'Tippe ein englisches Wort an, dann das passende deutsche.',
@@ -98,6 +105,7 @@ export const LEVELS: LevelMeta[] = [
       },
       {
         kind: 'spy',
+        grammar: { topic: 'Describing people', rule: 'He/She has curly hair. · He/She wears glasses. · He/She doesn\'t wear braces.' },
         title: 'Who is the spy?',
         instruction: 'Read the witness report. Tap the right person.',
         instructionDe: 'Lies die Zeugenaussage. Tippe auf die Person, zu der ALLES passt.',
@@ -109,6 +117,7 @@ export const LEVELS: LevelMeta[] = [
       },
       {
         kind: 'vocab1',
+        grammar: { topic: 'Vocabulary: English → German', rule: 'strong = stark · shy = schüchtern · reliable = zuverlässig' },
         title: 'Vocab Blitz',
         instruction: 'What is it in German? Be fast – build a combo!',
         instructionDe: 'Was heißt das auf Deutsch? Schnell sein gibt Combo-Punkte!',
@@ -121,30 +130,32 @@ export const LEVELS: LevelMeta[] = [
     id: 'generator',
     name: 'The Power Generator',
     nameDe: 'Der Energie-Generator',
-    topic: 'Simple present',
+    topic: 'Simple past',
     color: '#ffd60a',
     scene: 'generator',
-    glitchTaunt: "I put grammar bugs into your generator! Now it doesn't works. Oops… I mean: it doesn't WORK. Grrr!",
+    glitchTaunt: 'Yesterday I goed … I mean WENT into your generator. And I putted … I mean PUT grammar bugs in it. Grrr!',
     stages: [
       {
         kind: 'bughunt',
+        grammar: { topic: 'Simple past: find the mistakes', rule: 'yesterday / last … → simple past · regular: + -ed · irregular: go → went · didn\'t / Did + normal verb' },
         title: 'Spot the grammar bug',
         instruction: 'Tap the wrong word. Then choose the right one.',
         instructionDe: 'Jeder Satz hat EINEN Fehler. Tippe ihn an und wähle die Korrektur.',
         hints: [
-          'Look at the verbs! he/she/it → -s … but NOT after doesn\'t or Does.',
-          "doesn't + verb without -s · Does + verb without -s · I/you/we/they → don't / Do",
+          'Look at the verbs! yesterday / last … → you need the simple past.',
+          "take → took · didn't hear · Did you see …? · they → were · last Friday → laughed",
         ],
         team: roles3('reads the sentence.', 'hunts the bug.', 'chooses the correction.'),
       },
       {
         kind: 'builder',
-        title: 'Build power sentences',
+        grammar: { topic: 'Simple past: ✔ ✖ ?', rule: '✔ He took … · ✖ He didn\'t take … · ? Did he take …?' },
+        title: 'Build simple past sentences',
         instruction: 'Tap the blocks in the right order. One block is a trap!',
         instructionDe: 'Tippe die Wortblöcke in der richtigen Reihenfolge an. Ein Block ist eine Falle!',
         hints: [
-          'Statements: who + verb + rest. Questions start with Do or Does.',
-          '"doesn\'t laugh" – not "doesn\'t laughs". "Does … wear" – not "Does … wears".',
+          'Statements: who + verb + rest. Questions start with Did.',
+          '"didn\'t see" – not "didn\'t saw". "Did you hear …?" – not "Did you heard …?"',
         ],
         team: roles3('finds the first word.', 'puts the verb in.', 'looks for the trap.'),
       },
@@ -162,6 +173,7 @@ export const LEVELS: LevelMeta[] = [
     stages: [
       {
         kind: 'listening',
+        grammar: { topic: 'Listening: true, false or not in the text?', rule: 'Read the sentences first – then listen for names and details.' },
         title: 'The "My best friend" show',
         instruction: 'Listen to the callers. Is it true, false or not in the text?',
         instructionDe: 'Hör zu. Ist die Aussage richtig (true), falsch (false) oder kommt sie nicht vor?',
@@ -184,6 +196,7 @@ export const LEVELS: LevelMeta[] = [
     stages: [
       {
         kind: 'vault',
+        grammar: { topic: 'Simple past: regular and irregular verbs', rule: 'regular: save → saved · irregular: go → went, see → saw, take → took' },
         title: 'Crack the vault',
         instruction: 'Turn every dial to the simple past. Then pull the lever.',
         instructionDe: 'Stelle an jedem Rad die Simple-Past-Form ein. Dann zieh den Hebel.',
@@ -195,6 +208,7 @@ export const LEVELS: LevelMeta[] = [
       },
       {
         kind: 'diary',
+        grammar: { topic: 'Simple past: positive, negative, question', rule: 'I took … · I didn\'t see … · Did you hear …?' },
         title: "The Glitch's secret diary",
         instruction: 'Tap a gap and choose the right form.',
         instructionDe: 'Tippe auf eine Lücke und wähle die richtige Form.',
@@ -206,6 +220,7 @@ export const LEVELS: LevelMeta[] = [
       },
       {
         kind: 'questions',
+        grammar: { topic: 'Simple past: questions with question words', rule: 'question word + did + person + normal verb: Where did you go?' },
         title: 'The question machine',
         instruction: 'Build the simple past question. Look at the answer!',
         instructionDe: 'Baue die Frage im Simple Past. Die Antwort hilft dir!',
@@ -229,6 +244,7 @@ export const LEVELS: LevelMeta[] = [
     stages: [
       {
         kind: 'reading',
+        grammar: { topic: 'Reading: a story in the simple past', rule: 'The story happened yesterday – look for the past forms: was, laughed, said …' },
         title: 'Read in the dark',
         instruction: 'Move your finger over the page – it is a torch! Then tap the missing words IN THE TEXT.',
         instructionDe: 'Dein Finger ist eine Taschenlampe! Tippe die fehlenden Wörter direkt im Text an.',
@@ -251,6 +267,7 @@ export const LEVELS: LevelMeta[] = [
     stages: [
       {
         kind: 'radio',
+        grammar: { topic: 'Question words', rule: 'Who? person · What? thing · Where? place · When? time · Why? · How? · How many? · How much?' },
         title: 'Fix the witness questions',
         instruction: 'Read the answer. Choose the right question word.',
         instructionDe: 'Lies die Antwort und wähle das passende Fragewort.',
@@ -262,12 +279,13 @@ export const LEVELS: LevelMeta[] = [
       },
       {
         kind: 'frequency',
+        grammar: { topic: 'Reading for details + simple past', rule: 'Find the numbers: How many … did …? When did …?' },
         title: 'Find the secret frequency',
         instruction: 'Read the message. The answers are the code!',
         instructionDe: 'Lies die abgefangene Nachricht. Die Zahlen-Antworten ergeben den Code.',
         hints: [
           'Careful – there are MORE numbers in the message than you need.',
-          "He took 4 cores. 2 robots are at the gate. They must come at 9 o'clock.",
+          "He took 4 superpowers. 2 robots are at the gate. They must come at 9 o'clock.",
         ],
         team: roles3('reads the message aloud.', 'finds the numbers.', 'types the code.'),
       },
@@ -284,6 +302,7 @@ export const LEVELS: LevelMeta[] = [
     stages: [
       {
         kind: 'vocab2',
+        grammar: { topic: 'Vocabulary: German → English', rule: 'retten = save · verletzen = hurt · aufwachsen = grow up' },
         title: 'Vocab Blitz 2',
         instruction: 'What is it in English? Build a combo!',
         instructionDe: 'Was heißt das auf Englisch? Mehrere richtig hintereinander = Combo!',
@@ -292,6 +311,7 @@ export const LEVELS: LevelMeta[] = [
       },
       {
         kind: 'spelling',
+        grammar: { topic: 'Vocabulary: spelling', rule: 'Listen, then spell the word letter by letter.' },
         title: 'Spelling lab',
         instruction: 'Spell the English word with the letters.',
         instructionDe: 'Schreib das englische Wort mit den Buchstaben. 🔊 hilft beim Hören.',
@@ -300,6 +320,7 @@ export const LEVELS: LevelMeta[] = [
       },
       {
         kind: 'gaptext',
+        grammar: { topic: 'Vocabulary in a text', rule: 'Read the whole sentence – which word fits?' },
         title: 'A letter for a friend',
         instruction: 'Fill the gaps with words from the box. One word is extra!',
         instructionDe: 'Fülle die Lücken mit den Wörtern aus dem Kasten. Ein Wort bleibt übrig!',
@@ -313,8 +334,8 @@ export const LEVELS: LevelMeta[] = [
   },
   {
     id: 'gate',
-    name: 'The Main Gate',
-    nameDe: 'Das Haupttor',
+    name: 'The Final Showdown',
+    nameDe: 'Der große Showdown',
     topic: 'Final mission: everything!',
     color: '#ff7b00',
     scene: 'gate',
@@ -322,17 +343,19 @@ export const LEVELS: LevelMeta[] = [
     stages: [
       {
         kind: 'boss',
+        grammar: { topic: 'Revision: simple past, question words, vocabulary', rule: 'yesterday / last … → simple past · didn\'t / Did + normal verb' },
         title: 'Boss fight: The Glitch',
         instruction: 'Take turns! Every right answer is a hero attack.',
         instructionDe: 'Wechselt euch ab! Jede richtige Antwort ist ein Treffer.',
         hints: [
-          'yesterday / last … → simple past · every day / always → simple present.',
-          "he/she/it → -s · after did/didn't/does/doesn't → normal verb · How old / How many",
+          'yesterday / last … → simple past. Person, place or time? → Who / Where / When',
+          "after did / didn't → normal verb · they → were · How old / How many",
         ],
         team: roles3('attacks with question 1, 4, 7 …', 'attacks with question 2, 5, 8 …', 'attacks with question 3, 6, 9 …'),
       },
       {
         kind: 'twist',
+        grammar: { topic: 'Talking to a friend', rule: 'Do you want …? · Everybody makes mistakes!' },
         title: 'Fight … or friendship?',
         instruction: 'The Glitch has something to tell you. What do real heroes do?',
         instructionDe: 'The Glitch will euch etwas sagen. Was machen echte Helden?',
@@ -341,19 +364,12 @@ export const LEVELS: LevelMeta[] = [
       },
       {
         kind: 'profile',
+        grammar: { topic: 'Describing a person', rule: 'He/She is … · He/She has … hair. · He/She wears …' },
         title: 'Your hero profile',
         instruction: 'Write about your hero: looks, personality and why your hero is special.',
         instructionDe: 'Beschreibe deine*n Held*in: Aussehen, Persönlichkeit und warum er/sie besonders ist.',
         hints: ['he / she → has, is · they → have, are', 'Look at your hero picture: is the hair curly, straight, spiky or short?'],
         team: roles3('writes about their own hero.', 'writes about their own hero.', 'writes about their own hero.'),
-      },
-      {
-        kind: 'finalgate',
-        title: 'Open the main gate',
-        instruction: 'Fill the gaps. The first letters make the password!',
-        instructionDe: 'Fülle die Lücken. Die Anfangsbuchstaben ergeben das Passwort!',
-        hints: ['The Glitch never had one. Every hero squad needs one. 4 letters!', 'tall · else · alone · mistakes → T-E-A-M'],
-        team: roles3('fills gap 1 and 3.', 'fills gap 2 and 4.', 'types the password.'),
       },
     ],
   },

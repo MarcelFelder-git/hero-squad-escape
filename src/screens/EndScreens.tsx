@@ -5,6 +5,7 @@ import { Glitch } from '../components/art/Characters';
 import { CityBackdrop } from '../components/art/Scenes';
 import { HeroAvatar } from '../components/art/HeroAvatar';
 import { HeroRun } from '../bonus/HeroRun';
+import { Finale } from './Finale';
 import { hallOnline, sendToHall } from '../hall/hall';
 import { sfx } from '../audio/sound';
 
@@ -48,6 +49,7 @@ export function CompleteScreen({ onRestart }: { onRestart: () => void }) {
   const r = computeResult(state);
   const [send, setSend] = useState<SendState>(state.hallSent ? 'sent' : 'idle');
   const [run, setRun] = useState(false);
+  const [finale, setFinale] = useState(true);
   const autoSent = useRef(false);
 
   const doSend = useCallback(async () => {
@@ -69,7 +71,6 @@ export function CompleteScreen({ onRestart }: { onRestart: () => void }) {
   useEffect(() => {
     if (autoSent.current) return;
     autoSent.current = true;
-    sfx.victory();
     if (!state.hallSent) void doSend();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -79,7 +80,7 @@ export function CompleteScreen({ onRestart }: { onRestart: () => void }) {
   return (
     <div className="screen complete-screen">
       <CityBackdrop open />
-      <Confetti />
+      {!finale && <Confetti />}
       <div className="complete-content">
         <div className="panel certificate pop-in">
           <div className="cert-top">
@@ -172,6 +173,7 @@ export function CompleteScreen({ onRestart }: { onRestart: () => void }) {
           </div>
         </div>
       </div>
+      {finale && <Finale heroes={state.heroes} muted={state.muted} onDone={() => setFinale(false)} />}
       {run && <HeroRun heroes={state.heroes} best={state.bonusHighscore} onScore={onScore} onClose={() => setRun(false)} />}
     </div>
   );

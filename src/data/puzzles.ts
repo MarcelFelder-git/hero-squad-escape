@@ -76,34 +76,34 @@ export interface BugSentence {
 
 const BUG_SENTENCES_A: BugSentence[] = [
   {
-    words: ['Captain', 'Nova', "doesn't", 'goes', 'to', 'school', 'on', 'Saturdays.'],
+    words: ['Yesterday', 'the', 'Glitch', 'taked', 'our', 'superpowers.'],
     bugIndex: 3,
-    options: ['go', 'going', 'went'],
-    explain: "doesn't + infinitive: doesn't go",
+    options: ['took', 'taken', 'takes'],
+    explain: 'take → took (irregular verb)',
   },
   {
-    words: ['Max', 'always', 'help', 'his', 'friends', 'with', 'their', 'homework.'],
-    bugIndex: 2,
-    options: ['helps', 'helping', 'to help'],
-    explain: 'he/she/it → -s: Max helps',
-  },
-  {
-    words: ['Do', 'Lina', 'like', 'her', 'new', 'glasses?'],
-    bugIndex: 0,
-    options: ['Does', 'Is', 'Are'],
-    explain: 'he/she/it → Does: Does Lina like …?',
-  },
-  {
-    words: ['My', 'friends', "doesn't", 'laugh', 'at', 'me.'],
-    bugIndex: 2,
-    options: ["don't", "isn't", 'not'],
-    explain: "they (my friends) → don't",
-  },
-  {
-    words: ['Does', 'the', 'head', 'student', 'wears', 'braces?'],
+    words: ['Last', 'night', 'Max', "didn't", 'heard', 'the', 'alarm.'],
     bugIndex: 4,
-    options: ['wear', 'wearing', 'wore'],
-    explain: 'Does + infinitive: Does … wear?',
+    options: ['hear', 'heared', 'hears'],
+    explain: "didn't + normal verb: didn't hear",
+  },
+  {
+    words: ['Did', 'you', 'saw', 'the', 'robots', 'yesterday?'],
+    bugIndex: 2,
+    options: ['see', 'seen', 'sees'],
+    explain: 'Did + normal verb: Did you see …?',
+  },
+  {
+    words: ['Lina', 'and', 'Tom', 'was', 'at', 'the', 'HQ', 'last', 'week.'],
+    bugIndex: 3,
+    options: ['were', 'is', 'be'],
+    explain: 'they (Lina and Tom) → were',
+  },
+  {
+    words: ['The', 'heroes', 'laugh', 'a', 'lot', 'last', 'Friday.'],
+    bugIndex: 2,
+    options: ['laughed', 'laughs', 'laughing'],
+    explain: 'last Friday → simple past: laughed (regular: + -ed)',
   },
 ];
 
@@ -117,21 +117,21 @@ export interface BuilderSentence {
 const BUILDER_SENTENCES_A: BuilderSentence[] = [
   {
     label: 'Positive ✔',
-    tiles: ['Zara', 'helps', 'her friends', 'every day.'],
-    trap: 'help',
-    translation: 'Zara hilft jeden Tag ihren Freunden.',
+    tiles: ['The Glitch', 'took', 'the superpowers', 'last night.'],
+    trap: 'taked',
+    translation: 'Der Glitch hat letzte Nacht die Superkräfte genommen.',
   },
   {
     label: 'Negative ✖',
-    tiles: ['Ben', "doesn't", 'laugh', 'at', 'his friends.'],
-    trap: 'laughs',
-    translation: 'Ben lacht nicht über seine Freunde.',
+    tiles: ['The heroes', "didn't", 'see', 'the Glitch.'],
+    trap: 'saw',
+    translation: 'Die Helden haben den Glitch nicht gesehen.',
   },
   {
     label: 'Question ?',
-    tiles: ['Does', 'your hero', 'wear', 'a mask?'],
-    trap: 'Do',
-    translation: 'Trägt dein Held eine Maske?',
+    tiles: ['Did', 'you', 'hear', 'the alarm?'],
+    trap: 'heard',
+    translation: 'Hast du den Alarm gehört?',
   },
 ];
 
@@ -159,7 +159,7 @@ const DIARY_A: DiaryPart[] = [
   { hint: 'leave', options: ['left', 'leaved', 'leave'] },
   ' my secret lab at 8 o\'clock. I ',
   { hint: 'take', options: ['took', 'taked', 'take'] },
-  ' all the energy cores from the Hero HQ. Then I ',
+  ' all the superpowers from the Hero HQ. Then I ',
   { hint: 'laugh', options: ['laughed', 'laught', 'laughs'] },
   ' for an hour. The heroes ',
   { hint: 'not see', options: ["didn't see", "didn't saw", "don't saw"] },
@@ -185,7 +185,7 @@ export interface RadioItem {
 
 const RADIO_ITEMS_A: RadioItem[] = [
   { question: '___ did you see in the lab?', answer: 'I saw the Glitch!', correct: 'Who', witness: 'Mrs Patel, cleaner' },
-  { question: '___ did he take?', answer: 'He took the energy cores.', correct: 'What', witness: 'Sam, head student' },
+  { question: '___ did he take?', answer: 'He took the superpowers.', correct: 'What', witness: 'Sam, head student' },
   { question: '___ did he go after that?', answer: 'He went to the old moon tower.', correct: 'Where', witness: 'Kiki, pizza driver' },
   { question: '___ did he leave the HQ?', answer: "At 8 o'clock in the evening.", correct: 'When', witness: 'Officer Brown' },
   { question: '___ did he laugh so loudly?', answer: 'Because he was happy about his plan.', correct: 'Why', witness: 'Mr Jones, teacher' },
@@ -198,10 +198,10 @@ const INTERCEPTED_MESSAGE_A = [
   'TO: all my robots',
   'FROM: The Glitch',
   '',
-  'Robots, listen! Yesterday I took 4 energy cores from the Hero HQ.',
+  'Robots, listen! Yesterday I took 4 superpowers from the Hero HQ.',
   'It was easy. The heroes didn\'t see me. Now I am in the old moon tower with my 3 pet robots.',
   '2 robots are guarding the main gate. Don\'t leave the gate alone!',
-  'Tomorrow I want 7 more cores. Bring them to the tower at 9 o\'clock.',
+  'Tomorrow I want 7 more superpowers. Bring them to the tower at 9 o\'clock.',
   'Don\'t be late. I don\'t like late robots. — G.',
 ];
 
@@ -211,12 +211,12 @@ export interface FrequencyQuestion {
 }
 
 const FREQUENCY_QUESTIONS_A: FrequencyQuestion[] = [
-  { q: 'How many cores did the Glitch take yesterday?', answer: 4 },
+  { q: 'How many superpowers did the Glitch take yesterday?', answer: 4 },
   { q: 'How many robots are guarding the main gate?', answer: 2 },
-  { q: "When must the robots bring the cores? At … o'clock.", answer: 9 },
+  { q: "When must the robots bring the superpowers? At … o'clock.", answer: 9 },
 ];
 
-/* ---------- Room 5: Main Gate ---------- */
+/* ---------- Level 8: boss fight ---------- */
 export interface BossQuestion {
   text: string;
   options: string[]; // first = correct
@@ -224,9 +224,9 @@ export interface BossQuestion {
 }
 
 const BOSS_QUESTIONS_A: BossQuestion[] = [
-  { text: "My best friend ___ always there for me. She's so reliable!", options: ['is', 'are', 'be'], topic: 'Simple present' },
-  { text: 'The Glitch ___ have any friends.', options: ["doesn't", "don't", "isn't"], topic: 'Simple present: negative' },
-  { text: '___ you want to be a hero?', options: ['Do', 'Does', 'Are'], topic: 'Simple present: question' },
+  { text: 'Yesterday the Glitch ___ our superpowers.', options: ['took', 'taked', 'takes'], topic: 'Simple past: irregular' },
+  { text: 'At Hero School the Glitch ___ have any friends.', options: ["didn't", "doesn't", "wasn't"], topic: 'Simple past: negative' },
+  { text: '___ the heroes at home last Friday? – No, they were at the HQ.', options: ['Were', 'Was', 'Did'], topic: 'Simple past: was / were' },
   { text: 'Yesterday we ___ a cat in the water.', options: ['saved', 'save', 'saves'], topic: 'Simple past: regular' },
   { text: 'Last summer I ___ in the sea every day.', options: ['swam', 'swimmed', 'swim'], topic: 'Simple past: irregular' },
   { text: '___ you finish your homework last night?', options: ['Did', 'Do', 'Were'], topic: 'Simple past: question' },
@@ -235,20 +235,6 @@ const BOSS_QUESTIONS_A: BossQuestion[] = [
   { text: 'My grandfather ___ on a small farm.', options: ['grew up', 'growed up', 'grow upped'], topic: 'Simple past: irregular' },
 ];
 
-export interface GateGap {
-  before: string;
-  after: string;
-  options: string[]; // first = correct
-}
-
-const GATE_GAPS_A: GateGap[] = [
-  { before: 'Our coach is 1.95 m. He is very ', after: '.', options: ['tall', 'shy', 'patient'] },
-  { before: "Why can't I have a pet? Everybody ", after: ' has a pet!', options: ['else', 'nobody', 'yourself'] },
-  { before: 'Go away, Glitch! Leave us ', after: '!', options: ['alone', 'left', 'right'] },
-  { before: 'There are some ', after: ' in your text. Please correct them.', options: ['mistakes', 'heroes', 'lives'] },
-];
-
-export const GATE_PASSWORD = 'TEAM';
 
 
 /* ---------- task sets: A (original) and B (new words) ---------- */
@@ -263,7 +249,6 @@ export let RADIO_ITEMS = RADIO_ITEMS_A;
 export let INTERCEPTED_MESSAGE = INTERCEPTED_MESSAGE_A;
 export let FREQUENCY_QUESTIONS = FREQUENCY_QUESTIONS_A;
 export let BOSS_QUESTIONS = BOSS_QUESTIONS_A;
-export let GATE_GAPS = GATE_GAPS_A;
 export let currentVariant = 0;
 
 export function applyVariant(v: number) {
@@ -280,7 +265,6 @@ export function applyVariant(v: number) {
   INTERCEPTED_MESSAGE = b ? B.INTERCEPTED_MESSAGE_B : INTERCEPTED_MESSAGE_A;
   FREQUENCY_QUESTIONS = b ? B.FREQUENCY_QUESTIONS_B : FREQUENCY_QUESTIONS_A;
   BOSS_QUESTIONS = b ? B.BOSS_QUESTIONS_B : BOSS_QUESTIONS_A;
-  GATE_GAPS = b ? B.GATE_GAPS_B : GATE_GAPS_A;
 }
 
 /** hints of a stage for the current task set */

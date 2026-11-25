@@ -18,14 +18,14 @@ Die Links zu allen Seiten stehen auch im Lehrkräfte-Menü.
 
 ### Story und Überraschungen im Presenter
 
-Ablauf: Titel → Hero City (die Helden stellen sich vor) → der Glitch klaut die Power-Cores → Publikumsfrage →
+Ablauf: Titel → Hero City (die Helden stellen sich vor) → der Glitch klaut die Superkräfte → Publikumsfrage →
 **Überraschung 1** → Star Girls Idee → Helden-Schwur → Mission → Publikumsfrage → **Überraschung 2** → Countdown.
 Keine der Überraschungen kommt im Spiel vor (Hack und Anruf bleiben fürs iPad geheim).
 
 - **Überraschung 1 – Scanner-Drohne:** Eine Glitch-Drohne fliegt herein („Who is there?“) und scannt den Raum mit einem Laser:
   **„FREEZE!“** – alle müssen 6 Sekunden still stehen. Ergebnis: „Kids: LOTS – Heroes: 0. Kids can't stop me!“ → Echo: „He is wrong!“
   Läuft automatisch (ca. 20 s), danach **Next**.
-- **Helden-Schwur:** Alle stehen auf, rechte Hand hoch, sprechen Echo 3 Sätze nach (je ein Klick). Die Englisch-Power füllt sich → „HERO RECRUITS!“
+- **Helden-Schwur:** Alle stehen auf, linke Hand hoch, sprechen Echo 3 Sätze nach (je ein Klick). Die Hero-Power füllt sich → „HERO RECRUITS!“
 - **Überraschung 2 – Passwort-Schloss:** Ein Vorhängeschloss fällt auf den Bildschirm: „Four letters – it's what you want to be!“
   Die Klasse rät und buchstabiert auf Englisch **H-E-R-O** (pro Klick ein Buchstabe) → Schloss springt auf → Countdown.
 

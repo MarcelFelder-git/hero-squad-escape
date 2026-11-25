@@ -19,7 +19,7 @@ const DEMO: Hero[] = [
   {
     name: 'Lightning Leo',
     power: 'speedster',
-    look: { shirt: '#f9844a', suit: '#1e88e5', cape: '#ffd60a', skin: '#f6c9a0', hair: '#3b2416', hairStyle: 'spiky', mask: 'eyemask', emblem: 'bolt', accessory: 'none' },
+    look: { shirt: '#f9844a', suit: '#1e88e5', cape: '#ffd60a', skin: '#6b4226', hair: '#111111', hairStyle: 'spiky', mask: 'eyemask', emblem: 'bolt', accessory: 'none' },
   },
   {
     name: 'Star Girl',
@@ -195,7 +195,7 @@ export default function Presenter() {
     if (id === 'glitch' && step === 1) sfx.powerDown();
     if (id === 'glitch' && step === 2) {
       sfx.glitch();
-      setTimeout(() => say('Good evening, heroes! I took your power cores. Now you are normal people, and nobody laughs at me any more! Mwahaha!', true), 400);
+      setTimeout(() => say('Good evening, heroes! I took your superpowers. Now you are normal people, and nobody laughs at me any more! Mwahaha!', true), 400);
     }
     if (id === 'help' && step === 1) say("We aren't strong now, but we are friends. Let's ask the kids of Hero City for help!");
     if (id === 'mission') sfx.pop();
@@ -280,7 +280,7 @@ export default function Presenter() {
             {step >= 2 && (
               <div className="p-glitch-screen pop-in">
                 <Glitch className="p-glitch glitch-anim" />
-                <div className="bubble bubble-villain">I took your power cores! Now you are normal people – and nobody laughs at ME any more! Mwahaha!</div>
+                <div className="bubble bubble-villain">I took your superpowers! Now you are normal people – and nobody laughs at ME any more! Mwahaha!</div>
               </div>
             )}
             <div className="p-heroes">
@@ -295,7 +295,7 @@ export default function Presenter() {
         )}
 
         {slide.id === 'quiz1' && (
-          <Quiz before="Yesterday The Glitch" after="the power cores." options={['took', 'taked', 'takes']} explain="take → took (simple past, irregular verb) ✔" />
+          <Quiz before="Yesterday The Glitch" after="the superpowers." options={['took', 'taked', 'takes']} explain="take → took (simple past, irregular verb) ✔" />
         )}
 
         {slide.id === 'help' && (
@@ -311,8 +311,7 @@ export default function Presenter() {
             </div>
             {step >= 1 && (
               <div className="bubble bubble-echo p-bubble pop-in">
-                "We aren't strong now, but we are friends. Let's ask the <b>kids of Hero City</b> for help. They are clever and they speak
-                English!"
+                "We aren't strong now, but we are friends. Let's ask the <b>kids of Hero City</b> for help. They are clever and brave!"
               </div>
             )}
           </div>
@@ -320,7 +319,7 @@ export default function Presenter() {
 
         {slide.id === 'mission' && (
           <div className="p-panel">
-            <div className="caption big">Your mission, hero recruits: get the power cores back!</div>
+            <div className="caption big">Your mission, hero recruits: get the superpowers back!</div>
             <div className="p-steps">
               <div className="p-step pop-in">
                 <span className="p-step-num">1</span>

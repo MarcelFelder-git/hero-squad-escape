@@ -21,7 +21,6 @@ import { DiaryGaps } from '../puzzles/DiaryGaps';
 import { QuestionRadio } from '../puzzles/QuestionRadio';
 import { FrequencyCode } from '../puzzles/FrequencyCode';
 import { BossBattle } from '../puzzles/BossBattle';
-import { FinalGate } from '../puzzles/FinalGate';
 import { VocabBlitzEnDe, VocabBlitzDeEn } from '../puzzles/VocabBlitz';
 import { VocabSpell } from '../puzzles/VocabSpell';
 import { ListeningShow } from '../puzzles/ListeningShow';
@@ -50,7 +49,6 @@ const PUZZLES: Record<StageKind, ComponentType<PuzzleProps>> = {
   boss: BossBattle,
   twist: GlitchTwist,
   profile: HeroProfile,
-  finalgate: FinalGate,
 };
 
 const GOOD = ['POW!', 'ZAP!', 'BOOM!', 'WHAM!', 'YES!', 'SUPER!', 'KAPOW!'];
@@ -63,7 +61,7 @@ export function LevelScreen() {
   const stage = level.stages[state.stageIndex];
   const Puzzle = PUZZLES[stage.kind];
   const gear = gearCount(state);
-  const friendly = stage.kind === 'profile' || stage.kind === 'finalgate';
+  const friendly = stage.kind === 'profile';
   const [burst, setBurst] = useState<{ id: number; text: string; kind: 'good' | 'bad' } | null>(null);
   const [shake, setShake] = useState(0);
   const [glitchSays, setGlitchSays] = useState<string | null>(null);
@@ -178,6 +176,10 @@ export function LevelScreen() {
                 </p>
                 <p className="instr-de">{stage.instructionDe}</p>
               </div>
+            </div>
+            <div className="grammar-strip" key={`g-${state.levelIndex}-${state.stageIndex}`}>
+              <span className="grammar-tag">📘 {stage.grammar.topic}</span>
+              <span className="grammar-rule">{stage.grammar.rule}</span>
             </div>
 
             {rolesOpen && multi && (

@@ -229,8 +229,8 @@ export const WORKSHEET_STORY_TITLE = 'The night the lights went out';
 export const WORKSHEET_STORY = [
   'It was Friday night in Hero City. The heroes were at the Hero HQ and they played board games. Suddenly, all the lights went out!',
   '"Who did that?" asked Lightning Leo. Nobody answered. Then a green face appeared on the big computer screen. It was THE GLITCH!',
-  '"Good evening, heroes!" he laughed. "I took your power cores. Now you are normal people. Ha ha!" Then the screen went black.',
-  'The heroes were scared, but Star Girl had an idea. "We aren\'t strong now, but we are friends. Let\'s ask the kids of Hero City for help. They are clever and they speak English!"',
+  '"Good evening, heroes!" he laughed. "I took your superpowers. Now you are normal people. Ha ha!" Then the screen went black.',
+  'The heroes were scared, but Star Girl had an idea. "We aren\'t strong now, but we are friends. Let\'s ask the kids of Hero City for help. They are clever and brave!"',
   'So the heroes wrote a secret code for you. Only real heroes can crack it …',
 ];
 
@@ -245,7 +245,7 @@ export const WORKSHEET_TASKS: WorksheetTask[] = [
   { s: 'The heroes played football at the HQ.', a: 'false' },
   { s: 'Lightning Leo was drinking hot chocolate.', a: 'not' },
   { s: 'The Glitch had a green face.', a: 'true' },
-  { s: 'The Glitch took the power cores.', a: 'true' },
+  { s: 'The Glitch took the superpowers.', a: 'true' },
   { s: 'After that, the heroes were very strong.', a: 'false' },
   { s: 'Star Girl is the head student of Hero School.', a: 'not' },
   { s: 'Star Girl wanted to ask the kids of Hero City for help.', a: 'true' },
