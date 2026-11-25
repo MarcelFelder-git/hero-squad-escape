@@ -9,9 +9,11 @@ import { Burst } from '../components/ui';
 import { GEAR } from '../data/levels';
 import { sfx, setMuted, unlockAudio } from '../audio/sound';
 import { speak, speakGlitch, stopSpeaking } from '../audio/speech';
-import { Highlights, Hijack, PresenterCall } from './PresenterSurprises';
+import { Oath, PasswordLock, Scan } from './PresenterSurprises';
 
 const PIN = '4242';
+
+const INTROS = ["I'm super fast! ⚡", "I'm very brave! 🛡", 'I have cool gadgets! 🔧'];
 
 const DEMO: Hero[] = [
   {
@@ -40,15 +42,15 @@ interface Slide {
 
 const SLIDES: Slide[] = [
   { id: 'title', steps: 1 },
-  { id: 'city', steps: 2 },
+  { id: 'city', steps: 3 },
   { id: 'glitch', steps: 3 },
   { id: 'quiz1', steps: 1 },
+  { id: 'scan', steps: 1, secret: true },
   { id: 'help', steps: 2 },
-  { id: 'hijack', steps: 1, secret: true },
+  { id: 'oath', steps: 5 },
   { id: 'mission', steps: 3 },
-  { id: 'highlights', steps: 3 },
   { id: 'quiz2', steps: 1 },
-  { id: 'call', steps: 1, secret: true },
+  { id: 'lock', steps: 6, secret: true },
   { id: 'ready', steps: 1 },
 ];
 
@@ -171,11 +173,7 @@ export default function Presenter() {
   const [s, setS] = useState(0);
   const [step, setStep] = useState(0);
   const [voice, setVoice] = useState(true);
-  const [shoutTick, setShoutTick] = useState(0);
-  const [hijackDone, setHijackDone] = useState(false);
   const slide = SLIDES[s];
-
-  useEffect(() => setHijackDone(false), [s]);
 
   useEffect(() => {
     setMuted(false);
@@ -192,11 +190,12 @@ export default function Presenter() {
   useEffect(() => {
     if (!ok) return;
     const id = slide.id;
-    if (id === 'city' && step === 1) say("Let's play a board game!");
+    if (id === 'city' && step === 1) say('Meet the Hero Squad!');
+    if (id === 'city' && step === 2) say("Let's play a board game!");
     if (id === 'glitch' && step === 1) sfx.powerDown();
     if (id === 'glitch' && step === 2) {
       sfx.glitch();
-      setTimeout(() => say('Good evening, heroes! I took your power cores. Now you are normal people. Mwahaha!', true), 400);
+      setTimeout(() => say('Good evening, heroes! I took your power cores. Now you are normal people, and nobody laughs at me any more! Mwahaha!', true), 400);
     }
     if (id === 'help' && step === 1) say("We aren't strong now, but we are friends. Let's ask the kids of Hero City for help!");
     if (id === 'mission') sfx.pop();
@@ -205,11 +204,6 @@ export default function Presenter() {
 
   const next = useCallback(() => {
     unlockAudio();
-    if (slide.id === 'hijack' && !hijackDone) {
-      // the Glitch blocks the presentation: every Next = one "HERO SQUAD!" shout
-      setShoutTick((t) => t + 1);
-      return;
-    }
     stopSpeaking();
     sfx.whoosh();
     if (step + 1 < slide.steps) setStep(step + 1);
@@ -217,7 +211,7 @@ export default function Presenter() {
       setS(s + 1);
       setStep(0);
     }
-  }, [s, step, slide.steps, slide.id, hijackDone]);
+  }, [s, step, slide.steps]);
 
   const prev = useCallback(() => {
     stopSpeaking();
@@ -245,7 +239,7 @@ export default function Presenter() {
   const darkness = slide.id === 'glitch' && step >= 1;
 
   return (
-    <div className={`presenter slide-${slide.id} ${darkness ? 'p-dark' : ''} ${slide.id === 'hijack' && !hijackDone ? 'p-hijacked' : ''}`}>
+    <div className={`presenter slide-${slide.id} ${darkness ? 'p-dark' : ''}`}>
       <div className="p-stage" key={`${s}`}>
         {slide.id === 'title' && (
           <div className="p-title">
@@ -266,12 +260,17 @@ export default function Presenter() {
             <div className="p-heroes">
               {DEMO.map((h, i) => (
                 <div key={i} className="p-hero">
+                  {step === 1 && (
+                    <div className="bubble bubble-echo p-intro pop-in" style={{ animationDelay: `${i * 0.35}s` }}>
+                      {INTROS[i]}
+                    </div>
+                  )}
                   <HeroAvatar hero={h} gear={8} className="p-hero-svg bob" />
                   <b>{h.name}</b>
                 </div>
               ))}
             </div>
-            {step >= 1 && <div className="bubble bubble-echo p-bubble pop-in">Let's play a board game! 🎲</div>}
+            {step >= 2 && <div className="bubble bubble-echo p-bubble pop-in">It's game night at Hero HQ. Let's play a board game! 🎲</div>}
           </div>
         )}
 
@@ -281,7 +280,7 @@ export default function Presenter() {
             {step >= 2 && (
               <div className="p-glitch-screen pop-in">
                 <Glitch className="p-glitch glitch-anim" />
-                <div className="bubble bubble-villain">I took your power cores! Now you are normal people. Mwahaha!</div>
+                <div className="bubble bubble-villain">I took your power cores! Now you are normal people – and nobody laughs at ME any more! Mwahaha!</div>
               </div>
             )}
             <div className="p-heroes">
@@ -321,7 +320,7 @@ export default function Presenter() {
 
         {slide.id === 'mission' && (
           <div className="p-panel">
-            <div className="caption big">Your mission, heroes:</div>
+            <div className="caption big">Your mission, hero recruits: get the power cores back!</div>
             <div className="p-steps">
               <div className="p-step pop-in">
                 <span className="p-step-num">1</span>
@@ -351,11 +350,11 @@ export default function Presenter() {
           </div>
         )}
 
-        {slide.id === 'hijack' && <Hijack tick={shoutTick} voice={voice} onDone={() => setHijackDone(true)} />}
+        {slide.id === 'scan' && <Scan voice={voice} />}
 
-        {slide.id === 'highlights' && <Highlights step={step} hero={DEMO[1]} />}
+        {slide.id === 'oath' && <Oath step={step} heroes={DEMO} voice={voice} />}
 
-        {slide.id === 'call' && <PresenterCall voice={voice} />}
+        {slide.id === 'lock' && <PasswordLock step={step} voice={voice} />}
 
         {slide.id === 'quiz2' && (
           <Quiz before="A hero is always there for you. A hero is" after="." options={['reliable', 'lazy', 'shy']} explain="reliable = zuverlässig ✔" />

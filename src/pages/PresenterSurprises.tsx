@@ -1,358 +1,240 @@
-// Surprise moments for the presenter: the Glitch hijacks the show, a highlights teaser, a live call.
+// Surprise moments for the presenter. None of them appears in the game itself (no hack, no call),
+// so the game events stay a surprise: the Glitch's scanner drone, the hero oath and the password lock.
 import { useEffect, useRef, useState } from 'react';
 import type { Hero } from '../game/types';
 import { HeroAvatar } from '../components/art/HeroAvatar';
-import { Glitch } from '../components/art/Characters';
-import { Rocket } from '../components/art/Rocket';
+import { Echo, Glitch } from '../components/art/Characters';
+import { Burst } from '../components/ui';
 import { sfx } from '../audio/sound';
-import { speakGlitch, stopSpeaking } from '../audio/speech';
+import { speak, speakGlitch, stopSpeaking } from '../audio/speech';
 
-const HIJACK_LINES = ['> INCOMING SIGNAL …', '> PRESENTATION: hacked', '> NEW PRESENTER: THE GLITCH 😈'];
+/** The Glitch's spy drone – a flying TV with a scanner eye. */
+function GlitchDrone({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 160 150" className={className} aria-hidden="true">
+      <g className="drone-props">
+        <rect x={6} y={8} width={52} height={7} rx={3} fill="#adb5bd" stroke="#141018" strokeWidth={3} />
+        <rect x={102} y={8} width={52} height={7} rx={3} fill="#adb5bd" stroke="#141018" strokeWidth={3} />
+      </g>
+      <path d="M32,15 v14 M128,15 v14" stroke="#141018" strokeWidth={5} />
+      <rect x={20} y={26} width={120} height={84} rx={16} fill="#5a189a" stroke="#141018" strokeWidth={5} />
+      <rect x={32} y={36} width={96} height={62} rx={9} fill="#10002b" stroke="#141018" strokeWidth={3} />
+      <rect x={48} y={52} width={16} height={12} fill="#39ff14" />
+      <rect x={96} y={52} width={16} height={12} fill="#39ff14" />
+      <path d="M44,46 l20,6 M116,46 l-20,6" stroke="#39ff14" strokeWidth={4} />
+      <path d="M60,78 h6 v6 h6 v-6 h6 v6 h6 v-6 h6 v6 h6 v-6" fill="none" stroke="#39ff14" strokeWidth={3} />
+      <circle cx={80} cy={124} r={15} fill="#e63946" stroke="#141018" strokeWidth={5} className="drone-eye" />
+      <circle cx={75} cy={119} r={4} fill="#ffffffaa" />
+    </svg>
+  );
+}
+
+type ScanPhase = 'fly' | 'ask' | 'freeze' | 'result' | 'gone';
 
 /**
- * The Glitch takes over the projector. The audience has to shout "HERO SQUAD!" until the meter is full.
- * With the mic switched on the meter reacts to the noise in the room; otherwise every tap / Next / clicker press = one shout.
+ * Surprise 1: a Glitch drone flies onto the screen and scans the room. Everybody has to FREEZE.
+ * Result: "Lots of kids, 0 heroes – kids can't stop me!" → Echo: "He's wrong!"
  */
-export function Hijack({ tick, voice, onDone }: { tick: number; voice: boolean; onDone: () => void }) {
-  const [phase, setPhase] = useState<'noise' | 'shout' | 'beaten'>('noise');
-  const [lines, setLines] = useState(0);
-  const [meter, setMeter] = useState(0);
-  const [level, setLevel] = useState(0);
-  const [mic, setMic] = useState<'off' | 'on' | 'error'>('off');
-  const micStop = useRef<() => void>(() => {});
-  const meterRef = useRef(0);
-  const firstTick = useRef(tick);
-  const won = useRef(false);
+export function Scan({ voice }: { voice: boolean }) {
+  const [phase, setPhase] = useState<ScanPhase>('fly');
+  const [count, setCount] = useState(6);
+  const timers = useRef<number[]>([]);
 
   useEffect(() => {
-    sfx.glitch();
-    sfx.hack();
-    const ts = HIJACK_LINES.map((_, i) => window.setTimeout(() => setLines(i + 1), 300 + i * 500));
-    ts.push(
-      window.setTimeout(() => {
-        setPhase('shout');
-        sfx.glitch();
-        if (voice) speakGlitch('Stop! This is MY show now! Only a loud hero squad can stop me. Everybody, shout: HERO SQUAD!');
-      }, 2300),
-    );
-    return () => {
-      ts.forEach(clearTimeout);
-      stopSpeaking();
-      micStop.current();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const add = (n: number) => {
-    if (phase !== 'shout' || won.current) return;
-    const m = Math.min(100, meterRef.current + n);
-    const before = meterRef.current;
-    meterRef.current = m;
-    setMeter(m);
-    if (before < 50 && m >= 50) {
+    const later = (ms: number, fn: () => void) => timers.current.push(window.setTimeout(fn, ms));
+    sfx.whoosh();
+    later(1300, () => {
+      setPhase('ask');
       sfx.glitch();
-      if (voice) {
-        stopSpeaking();
-        speakGlitch('Ouch! My ears! Stop it!');
-      }
-    }
-    if (m >= 100) win();
-  };
-
-  const win = () => {
-    won.current = true;
-    setPhase('beaten');
-    micStop.current();
-    stopSpeaking();
-    sfx.pow();
-    sfx.unlock();
-    window.setTimeout(() => {
-      if (voice) speakGlitch("Noooo! Too loud! OK, OK. You win this time. But you can't beat my levels! Ha ha ha!");
-    }, 500);
-    onDone();
-  };
-
-  // Next button / clicker = one shout
-  useEffect(() => {
-    if (tick !== firstTick.current) {
-      add(25);
-      sfx.pow();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tick]);
-
-  const startMic = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+      if (voice) speakGlitch('Hello? Who is there? I can hear you!');
+    });
+    later(4300, () => {
+      setPhase('freeze');
+      sfx.hack();
+      if (voice) speakGlitch('FREEZE! Nobody move! Scanning!');
+    });
+    for (let i = 1; i <= 6; i++)
+      later(4300 + i * 1000, () => {
+        setCount(6 - i);
+        sfx.click();
       });
-      const ac = new AudioContext();
-      const an = ac.createAnalyser();
-      an.fftSize = 1024;
-      ac.createMediaStreamSource(stream).connect(an);
-      const buf = new Float32Array(an.fftSize);
-      let raf = 0;
-      let last = performance.now();
-      const loop = (now: number) => {
-        const dt = Math.min(0.1, (now - last) / 1000);
-        last = now;
-        an.getFloatTimeDomainData(buf);
-        let sum = 0;
-        for (const v of buf) sum += v * v;
-        const rms = Math.sqrt(sum / buf.length);
-        setLevel(Math.min(1, rms * 4));
-        const gain = Math.max(0, rms - 0.04) * 260 * dt;
-        if (gain > 0) add(gain);
-        raf = requestAnimationFrame(loop);
-      };
-      raf = requestAnimationFrame(loop);
-      micStop.current = () => {
-        cancelAnimationFrame(raf);
-        stream.getTracks().forEach((t) => t.stop());
-        ac.close();
-        micStop.current = () => {};
-      };
-      setMic('on');
-    } catch {
-      setMic('error');
-    }
-  };
-
-  const shrink = 1 - meter * 0.004;
-
-  return (
-    <div className={`hijack ${phase}`}>
-      <div className="hack-noise" />
-      {phase === 'noise' && (
-        <div className="hack-terminal">
-          {HIJACK_LINES.slice(0, lines).map((l) => (
-            <div key={l}>{l}</div>
-          ))}
-          <span className="cursor">█</span>
-        </div>
-      )}
-      {phase === 'shout' && (
-        <div className="hijack-shout">
-          <div className="hijack-villain" style={{ transform: `scale(${shrink})` }}>
-            <Glitch className={`hijack-glitch glitch-anim ${meter > 50 ? 'hurt' : ''}`} mood={meter > 50 ? 'angry' : 'evil'} />
-            <div className="bubble bubble-villain hijack-bubble">
-              {meter < 50 ? (
-                <>
-                  STOP! This is <b>MY</b> show now! Only a <b>LOUD</b> hero squad can stop me!
-                </>
-              ) : (
-                <>Ouch! My ears! STOP IT! 🙉</>
-              )}
-            </div>
-          </div>
-          <div className="hijack-call">📢 Everybody shout: “HERO SQUAD!”</div>
-          <div className="hijack-meter">
-            <i style={{ width: `${meter}%` }} />
-            <span>HERO POWER {Math.round(meter)}%</span>
-          </div>
-          <div className="hijack-controls">
-            <button className="btn btn-big btn-yellow" onClick={() => (sfx.pow(), add(25))}>
-              📢 HERO SQUAD!
-            </button>
-            {mic === 'off' && (
-              <button className="btn btn-ghost" onClick={startMic} title="Das Mikrofon misst, wie laut die Klasse ruft">
-                🎤 Mic
-              </button>
-            )}
-            {mic === 'on' && (
-              <span className="hijack-mic">
-                🎤 <i style={{ width: `${level * 100}%` }} />
-              </span>
-            )}
-            {mic === 'error' && <span className="muted small">kein Mikro – einfach tippen</span>}
-          </div>
-        </div>
-      )}
-      {phase === 'beaten' && (
-        <div className="hijack-beaten pop-in">
-          <Glitch className="hijack-glitch spin-away" mood="defeated" />
-          <div className="big-word">SYSTEM RESTORED!</div>
-          <div className="bubble bubble-villain">NOOO! Too loud! … OK, OK. But you can't beat my <b>LEVELS</b>! Ha ha ha!</div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function GearCycle({ hero }: { hero: Hero }) {
-  const [g, setG] = useState(0);
-  useEffect(() => {
-    const t = window.setInterval(() => setG((x) => (x + 1) % 10), 750);
-    return () => clearInterval(t);
-  }, []);
-  const gear = Math.min(8, g);
-  return (
-    <div className="hl-gear">
-      <HeroAvatar key={gear} hero={hero} gear={gear} className="hl-hero hl-pop" />
-      <span className="hl-gear-num">{gear === 0 ? 'normal kid' : gear === 8 ? 'SUPERHERO!' : `level ${gear}`}</span>
-    </div>
-  );
-}
-
-/** Teaser: what is waiting for the kids – revealed two cards per click. */
-export function Highlights({ step, hero }: { step: number; hero: Hero }) {
-  const cards = [
-    {
-      key: 'gear',
-      art: <GearCycle hero={hero} />,
-      title: 'From normal kid to SUPERHERO',
-      de: 'Nach jedem Level: neue Hero-Ausrüstung',
-    },
-    {
-      key: 'rocket',
-      art: <Rocket color="#ff006e" className="hl-rocket" />,
-      title: 'Rockets from Hero HQ',
-      de: 'Eine Rakete bringt eure Belohnung',
-    },
-    {
-      key: 'call',
-      art: (
-        <div className="hl-phone">
-          <Glitch className="hl-phone-glitch" />
-          <span>📞</span>
-        </div>
-      ),
-      title: 'The Glitch calls YOU',
-      de: 'Ein echter Anruf mitten im Spiel …',
-    },
-    {
-      key: 'dark',
-      art: (
-        <div className="hl-dark">
-          <p>Once upon a time, a little robot was very lonely …</p>
-        </div>
-      ),
-      title: 'Read in the dark 🔦',
-      de: 'Lesen mit der Taschenlampe',
-    },
-    {
-      key: 'end',
-      art: (
-        <div className="hl-secret">
-          <Glitch className="hl-secret-glitch" />
-          <span>?</span>
-        </div>
-      ),
-      title: 'A surprise ending … 🤫',
-      de: 'Wie endet die Geschichte? Geheim!',
-    },
-    {
-      key: 'bonus',
-      art: (
-        <div className="hl-run">
-          <HeroAvatar hero={hero} gear={7} className="hl-run-hero" />
-          <span className="hl-run-bug">🐞</span>
-          <span className="hl-run-hq">🏆</span>
-        </div>
-      ),
-      title: 'Bonus game + Hall of Heroes',
-      de: 'Jump’n’Run und eure Heldenkarte auf der Leinwand',
-    },
-  ];
-  return (
-    <div className="p-panel">
-      <div className="caption big">What's waiting for you? 🤩</div>
-      <div className="hl-grid">
-        {cards.map((c, i) =>
-          i < (step + 1) * 2 ? (
-            <div key={c.key} className="hl-card pop-in" style={{ animationDelay: `${(i % 2) * 0.15}s` }}>
-              <div className="hl-art">{c.art}</div>
-              <b>{c.title}</b>
-              <span>{c.de}</span>
-            </div>
-          ) : (
-            <div key={c.key} className="hl-card hl-hidden">
-              <span>?</span>
-            </div>
-          ),
-        )}
-      </div>
-    </div>
-  );
-}
-
-const CALL_TEXT = "Hello, kids of Hero City! I heard you want to help the heroes. Ha ha! My puzzles are much too difficult for you. You can't do it! … Or can you?";
-
-/** Right before the countdown: the Glitch calls the projector. */
-export function PresenterCall({ voice }: { voice: boolean }) {
-  const [phase, setPhase] = useState<'ring' | 'talk' | 'after'>('ring');
-  const [tries, setTries] = useState(0);
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const ring = useRef(0);
-
-  useEffect(() => {
-    const start = window.setTimeout(() => {
-      sfx.ring();
-      ring.current = window.setInterval(() => sfx.ring(), 2600);
-    }, 400);
+    later(10600, () => {
+      setPhase('result');
+      sfx.unlock();
+      if (voice) speakGlitch("Scan complete. Lots of kids. Zero heroes. Ha! Kids can't stop me! Bye bye!");
+    });
+    later(17500, () => {
+      setPhase('gone');
+      sfx.whoosh();
+      if (voice) later(900, () => speak('He is wrong! Kids CAN be heroes!'));
+    });
+    const t = timers.current;
     return () => {
-      clearTimeout(start);
-      clearInterval(ring.current);
+      t.forEach(clearTimeout);
       stopSpeaking();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const accept = () => {
-    clearInterval(ring.current);
-    sfx.select();
-    setPhase('talk');
-    let done = false;
-    const finish = () => {
-      if (done) return;
-      done = true;
-      sfx.glitch();
-      setPhase('after');
-    };
-    if (voice) {
-      speakGlitch(CALL_TEXT, finish);
-      window.setTimeout(finish, 15000);
-    } else window.setTimeout(finish, 7000);
-  };
+  return (
+    <div className={`scan is-${phase}`}>
+      {phase === 'freeze' && (
+        <>
+          <div className="scan-tint" />
+          <div className="scan-laser" />
+          <div className="scan-rec">● REC · SCANNING ROOM …</div>
+        </>
+      )}
+      {phase !== 'gone' && (
+        <div className="scan-drone-wrap">
+          <GlitchDrone className="scan-drone" />
+        </div>
+      )}
+      {phase === 'ask' && <div className="bubble bubble-villain scan-bubble pop-in">Hello? Who is there? I can hear you! 👀</div>}
+      {phase === 'freeze' && (
+        <div className="scan-freeze pop-in">
+          <div className="scan-big">FREEZE!</div>
+          <div className="scan-sub">Nobody move! 🧊 · Niemand bewegt sich!</div>
+          <div className="scan-count" key={count}>
+            {count}
+          </div>
+        </div>
+      )}
+      {phase === 'result' && (
+        <div className="scan-result pop-in">
+          <div className="scan-result-title">SCAN COMPLETE ✔</div>
+          <div className="scan-row">
+            <span>👧👦 Kids:</span> <b>LOTS</b>
+          </div>
+          <div className="scan-row">
+            <span>🦸 Heroes:</span> <b className="zero">0</b>
+          </div>
+          <div className="bubble bubble-villain">Ha! Only kids. Kids can't stop me! Bye-bye! 👋</div>
+        </div>
+      )}
+      {phase === 'gone' && (
+        <div className="p-panel scan-echo pop-in">
+          <Echo className="pr-echo" talking />
+          <div className="caption big">He is wrong! Kids CAN be heroes! 💪</div>
+        </div>
+      )}
+    </div>
+  );
+}
 
-  if (phase === 'after')
-    return (
-      <div className="p-panel p-call-after pop-in">
-        <Glitch className="p-call-glitch glitch-anim" />
-        <div className="caption big">Can you do it? 🤔</div>
-        <div className="p-call-shout">Show him, heroes! 💪</div>
-      </div>
-    );
+const OATH = ['I am clever and brave.', 'I always help my friends.', 'I speak English – and I never give up!'];
+
+/** Story beat + audience moment: everybody stands up and repeats the hero oath after Echo. */
+export function Oath({ step, heroes, voice }: { step: number; heroes: Hero[]; voice: boolean }) {
+  const lines = Math.min(step, OATH.length);
+  const done = step > OATH.length;
+
+  useEffect(() => {
+    if (step >= 1 && step <= OATH.length) {
+      sfx.power();
+      if (voice) speak(OATH[step - 1]);
+    }
+    if (step > OATH.length) {
+      sfx.transform();
+      if (voice) window.setTimeout(() => speak('Welcome, hero recruits! Now get the power cores back!'), 700);
+    }
+  }, [step, voice]);
 
   return (
-    <div className="p-call">
-      <div className="phone pop-in">
-        <div className="phone-top">{phase === 'ring' ? '📞 Incoming video call …' : '🔴 LIVE'}</div>
-        <Glitch className={`phone-glitch glitch-anim ${phase === 'talk' ? 'talking' : 'ringing'}`} />
-        <div className="phone-name">THE GLITCH</div>
-        {phase === 'ring' && (
-          <>
-            <p className="muted small">{tries > 0 ? "Ha ha! You can't decline ME!" : 'Who is calling?'}</p>
-            <div className="phone-btns">
-              <button
-                className="call-btn decline"
-                style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}
-                onClick={() => {
-                  sfx.glitch();
-                  setTries((t) => t + 1);
-                  setPos({ x: (Math.random() - 0.5) * 300, y: (Math.random() - 0.5) * 140 });
-                }}
-                aria-label="Ablehnen"
-              >
-                ✆
-              </button>
-              <button className="call-btn accept" onClick={accept} aria-label="Annehmen">
-                ✆
-              </button>
+    <div className={`p-panel oath ${done ? 'oath-done' : ''}`} style={{ ['--power' as string]: done ? 1 : lines / OATH.length }}>
+      {done && <div className="flash" />}
+      <div className="caption big">{done ? '⚡ HERO RECRUITS! ⚡' : 'The hero oath ✋'}</div>
+      {step === 0 && (
+        <div className="oath-intro pop-in">
+          <Echo className="pr-echo" talking />
+          <div className="bubble bubble-echo">
+            Everybody, <b>stand up</b>! Raise your <b>right hand</b> and repeat after me!
+            <div className="de">Alle aufstehen, rechte Hand hoch und nachsprechen!</div>
+          </div>
+        </div>
+      )}
+      {step > 0 && (
+        <div className="oath-lines">
+          {OATH.slice(0, lines).map((l, i) => (
+            <div key={l} className={`oath-line pop-in ${i === lines - 1 && !done ? 'now' : ''}`}>
+              “{l}”
             </div>
-          </>
-        )}
-        {phase === 'talk' && <div className="bubble bubble-villain phone-bubble">{CALL_TEXT}</div>}
+          ))}
+        </div>
+      )}
+      <div className="oath-heroes">
+        {heroes.map((h, i) => (
+          <div key={i} className="oath-hero">
+            <HeroAvatar hero={h} gear={0} className="p-hero-svg" />
+          </div>
+        ))}
       </div>
+      <div className="oath-meter">
+        <i />
+        <span>ENGLISH POWER {done ? 100 : Math.round((lines / OATH.length) * 100)}%</span>
+      </div>
+      {done && <div className="oath-badge pop-in">Now get the power cores back! 🔋</div>}
+    </div>
+  );
+}
+
+const PASSWORD = ['H', 'E', 'R', 'O'];
+
+/**
+ * Surprise 2: right before the countdown the Glitch locks the mission with a password.
+ * Riddle: "a four-letter word – it's what you want to be!" → the audience spells H-E-R-O in English.
+ */
+export function PasswordLock({ step, voice }: { step: number; voice: boolean }) {
+  const letters = Math.min(step, PASSWORD.length); // step 1–4 = one more letter
+  const open = step > PASSWORD.length;
+  const [burst, setBurst] = useState(0);
+
+  useEffect(() => {
+    const ts: number[] = [];
+    if (step === 0) {
+      sfx.glitch();
+      ts.push(window.setTimeout(() => sfx.clang(), 500));
+      if (voice)
+        ts.push(
+          window.setTimeout(
+            () => speakGlitch("Not so fast! The mission is locked. You need my password! It's a four letter word. It's what you want to be! Ha ha!"),
+            900,
+          ),
+        );
+    } else if (step <= PASSWORD.length) {
+      sfx.pow();
+      if (voice) speak(step === 1 ? `Spell it in English! ${PASSWORD[0]}` : PASSWORD[step - 1]);
+    } else {
+      sfx.unlock();
+      setBurst(Date.now());
+      if (voice) ts.push(window.setTimeout(() => speakGlitch('Noooo! How do you know my password?!'), 600));
+    }
+    return () => ts.forEach(clearTimeout);
+  }, [step, voice]);
+
+  return (
+    <div className="p-panel lock-slide">
+      <div className="caption big">{open ? 'MISSION UNLOCKED! 🔓' : step >= 1 ? 'Spell it in English! 🔤' : 'MISSION LOCKED 🔒'}</div>
+      <div className={`padlock ${open ? 'open' : ''}`}>
+        <div className="padlock-shackle" />
+        <div className="padlock-body">
+          <Glitch className="padlock-glitch" mood={open ? 'defeated' : 'evil'} />
+          <div className="padlock-slots">
+            {PASSWORD.map((c, i) => (
+              <span key={i} className={i < letters ? 'filled pop-in' : ''}>
+                {i < letters ? c : ''}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+      {step === 0 && (
+        <div className="bubble bubble-villain lock-bubble pop-in">
+          Not so fast! You need my <b>password</b>! It's a four-letter word … it's what <b>you</b> want to be! Ha ha!
+        </div>
+      )}
+      {open && <div className="bubble bubble-villain lock-bubble pop-in">NOOO! How do you know my password?! 😱</div>}
+      {burst > 0 && <Burst key={burst} text="UNLOCKED!" kind="good" />}
     </div>
   );
 }
