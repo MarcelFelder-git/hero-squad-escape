@@ -7,7 +7,7 @@ import { formatTime } from '../game/state';
 import { powerInfo } from '../data/heroOptions';
 import { hallOnline, loadHall, subscribeHall, type HallEntry } from '../hall/hall';
 import { sfx, setMuted, unlockAudio } from '../audio/sound';
-import { speak, speakGlitch } from '../audio/speech';
+import { canSpeak, isSpeechUnlocked, onSpeechUnlocked, speak, speakGlitch, unlockSpeech } from '../audio/speech';
 
 const SINCE_KEY = 'hall-since';
 
@@ -52,13 +52,22 @@ export default function Hall() {
   const [spot, setSpot] = useState<HallEntry | null>(null);
   const [finale, setFinale] = useState(false);
   const [voice, setVoice] = useState(true);
+  const [voiceReady, setVoiceReady] = useState(() => !canSpeak() || isSpeechUnlocked());
   const known = useRef(new Set<string>());
   const first = useRef(true);
 
   useEffect(() => {
     setMuted(false);
     document.title = 'Hall of Heroes';
+    return onSpeechUnlocked(() => setVoiceReady(true));
   }, []);
+
+  const enableVoice = () => {
+    unlockAudio();
+    unlockSpeech();
+    setVoiceReady(true);
+    speak('Voice on!');
+  };
 
   const add = useCallback(
     (list: HallEntry[], announce: boolean) => {
@@ -149,7 +158,7 @@ export default function Hall() {
           </span>
         </div>
         <div className="hall-tools">
-          <button className="icon-btn" onClick={() => { unlockAudio(); setVoice((v) => !v); }} title="Stimme an/aus">
+          <button className="icon-btn" onClick={() => { unlockAudio(); unlockSpeech(); setVoice((v) => !v); }} title="Stimme an/aus">
             {voice ? '🗣' : '🤐'}
           </button>
           <button className="icon-btn" onClick={resetView} title="Neue Ansicht (alte Teams ausblenden)">
@@ -160,6 +169,13 @@ export default function Hall() {
           </button>
         </div>
       </header>
+
+      {voice && !voiceReady && (
+        <button className="hall-voice-tip pop-in" onClick={enableVoice}>
+          🔊 Tap here once to turn on the voice
+          <span>Einmal antippen – dann werden neue Heldenteams vorgelesen (nötig auf iPad).</span>
+        </button>
+      )}
 
       {entries.length === 0 ? (
         <div className="hall-empty">
