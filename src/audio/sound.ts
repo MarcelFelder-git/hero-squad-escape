@@ -117,6 +117,32 @@ export const sfx = {
   power() {
     [392, 523, 659, 784, 1047].forEach((f, i) => tone({ freq: f, dur: 0.1, type: 'triangle', vol: 0.08, delay: i * 0.05 }));
   },
+  rocket() {
+    noise(1.6, 0.09, 0, 150);
+    tone({ freq: 80, to: 900, dur: 1.6, type: 'sawtooth', vol: 0.05 });
+  },
+  pop() {
+    tone({ freq: 300, to: 1400, dur: 0.12, type: 'square', vol: 0.08 });
+    noise(0.2, 0.06, 0.02, 1500);
+  },
+  transform() {
+    [523, 659, 784, 1047, 1319, 1568, 2093].forEach((f, i) => tone({ freq: f, dur: 0.22, type: 'triangle', vol: 0.06, delay: i * 0.06 }));
+    tone({ freq: 200, to: 2000, dur: 0.6, type: 'sine', vol: 0.04 });
+  },
+  ring() {
+    [0, 0.25, 1.2, 1.45].forEach((d) => {
+      tone({ freq: 880, dur: 0.18, type: 'square', vol: 0.05, delay: d });
+      tone({ freq: 660, dur: 0.18, type: 'square', vol: 0.04, delay: d + 0.09 });
+    });
+  },
+  powerDown() {
+    tone({ freq: 900, to: 40, dur: 1.4, type: 'sawtooth', vol: 0.08 });
+    noise(0.5, 0.06, 1.2, 100);
+  },
+  hack() {
+    for (let i = 0; i < 18; i++) tone({ freq: 80 + Math.random() * 1600, dur: 0.05, type: 'square', vol: 0.06, delay: i * 0.07 });
+    noise(1.3, 0.05, 0, 2500);
+  },
   victory() {
     const notes = [523, 523, 523, 659, 784, 659, 784, 1047];
     const times = [0, 0.15, 0.3, 0.45, 0.75, 0.9, 1.05, 1.25];

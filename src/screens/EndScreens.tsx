@@ -1,61 +1,12 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useGame } from '../game/GameContext';
-import { ROOMS } from '../data/rooms';
-import { computeResult, formatTime } from '../game/state';
-import { Core, Echo, Glitch } from '../components/art/Characters';
+import { computeResult, formatTime, powerInfo } from '../game/state';
+import { Glitch } from '../components/art/Characters';
 import { CityBackdrop } from '../components/art/Scenes';
 import { HeroAvatar } from '../components/art/HeroAvatar';
+import { HeroRun } from '../bonus/HeroRun';
+import { hallOnline, sendToHall } from '../hall/hall';
 import { sfx } from '../audio/sound';
-
-export function TransitionScreen() {
-  const { state, dispatch } = useGame();
-  const room = ROOMS[state.roomIndex];
-  const last = state.roomIndex === ROOMS.length - 1;
-  const rs = state.roomStats[state.roomIndex];
-  const leader = state.heroes[state.roomIndex % state.heroes.length];
-
-  useEffect(() => {
-    if (last) sfx.victory();
-  }, [last]);
-
-  return (
-    <div className="screen center-screen transition-screen">
-      <div className="rays" style={{ ['--core' as string]: room.coreColor }} />
-      <div className="panel transition-card pop-in">
-        <div className="room-num">ROOM {state.roomIndex + 1} UNLOCKED!</div>
-        <Core color={room.coreColor} className="big-core spin-y" label={room.core} />
-        <h1 className="comic-h">{last ? 'The gate is open!' : `${room.core} recovered!`}</h1>
-        <p className="lead">
-          {last
-            ? 'The Glitch is defeated and the Hero HQ is free again!'
-            : `Great job, ${leader?.name ?? 'heroes'}! ${state.roomIndex + 1} of ${ROOMS.length - 1} cores are back in the HQ.`}
-          <br />
-          <span className="de">
-            {last ? 'Das Haupttor ist offen – ihr habt es geschafft!' : 'Super! Der nächste Raum wartet schon.'}
-          </span>
-        </p>
-        <div className="core-row">
-          {ROOMS.slice(0, ROOMS.length - 1).map((r, i) => (
-            <Core key={r.id} color={i <= state.roomIndex ? r.coreColor : '#555'} className={`mini-core ${i <= state.roomIndex ? '' : 'dim'}`} />
-          ))}
-        </div>
-        <div className="mini-stats">
-          <span>❌ Fehler in diesem Raum: {rs.mistakes}</span>
-          <span>💡 Tipps: {rs.hints}</span>
-        </div>
-        <button
-          className="btn btn-big btn-yellow"
-          onClick={() => {
-            sfx.whoosh();
-            dispatch({ type: 'NEXT_ROOM' });
-          }}
-        >
-          {last ? '🏆 Mission complete!' : `Next room: ${ROOMS[state.roomIndex + 1].name} →`}
-        </button>
-      </div>
-    </div>
-  );
-}
 
 function Confetti() {
   const pieces = useMemo(
@@ -90,16 +41,40 @@ function Confetti() {
   );
 }
 
+type SendState = 'idle' | 'sending' | 'sent' | 'error';
+
 export function CompleteScreen({ onRestart }: { onRestart: () => void }) {
-  const { state } = useGame();
+  const { state, dispatch } = useGame();
   const r = computeResult(state);
-  const names = state.heroes.map((h) => h.name);
-  const nameList = names.length <= 1 ? names[0] ?? 'Hero' : `${names.slice(0, -1).join(', ')} & ${names[names.length - 1]}`;
-  const date = new Date(state.finishedAt ?? Date.now()).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
+  const [send, setSend] = useState<SendState>(state.hallSent ? 'sent' : 'idle');
+  const [run, setRun] = useState(false);
+  const autoSent = useRef(false);
+
+  const doSend = useCallback(async () => {
+    setSend('sending');
+    const ok = await sendToHall({
+      team: state.heroes.map((h) => ({ name: h.name, power: h.power, look: h.look, profile: h.profile })),
+      score: r.finalScore,
+      time_ms: Math.round(r.timeMs),
+      stars: r.stars,
+      rank: r.rank,
+    });
+    if (ok) {
+      setSend('sent');
+      sfx.unlock();
+      dispatch({ type: 'HALL_SENT' });
+    } else setSend('error');
+  }, [state.heroes, r.finalScore, r.timeMs, r.stars, r.rank, dispatch]);
 
   useEffect(() => {
+    if (autoSent.current) return;
+    autoSent.current = true;
     sfx.victory();
+    if (!state.hallSent) void doSend();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const onScore = useCallback((s: number) => dispatch({ type: 'BONUS_SCORE', score: s }), [dispatch]);
 
   return (
     <div className="screen complete-screen">
@@ -108,28 +83,34 @@ export function CompleteScreen({ onRestart }: { onRestart: () => void }) {
       <div className="complete-content">
         <div className="panel certificate pop-in">
           <div className="cert-top">
-            <span className="cert-kicker">★ Hero Certificate ★</span>
+            <span className="cert-kicker">★ Hero Squad · Mission complete ★</span>
             <h1 className="comic-title small">
-              <span className="t1">MISSION COMPLETE!</span>
+              <span className="t1">YOU ARE HEROES!</span>
             </h1>
+            <p className="de">Vom normalen Kind zum Superhelden – und aus dem Gegner wurde ein Freund.</p>
           </div>
-          <div className="cert-heroes">
+
+          <div className="hero-cards">
             {state.heroes.map((h, i) => (
-              <div key={i} className="cert-hero">
-                <HeroAvatar hero={h} className="cert-avatar bob" />
-                <b>{h.name}</b>
+              <div key={i} className="hero-card" style={{ animationDelay: `${0.2 + i * 0.25}s` }}>
+                <div className="hero-card-art" style={{ ['--c' as string]: h.look.cape }}>
+                  <HeroAvatar hero={h} gear={8} className="hero-card-avatar" />
+                </div>
+                <div className="hero-card-name">{h.name}</div>
+                <div className="hero-card-power">
+                  {powerInfo(h.power).icon} {powerInfo(h.power).name}
+                </div>
+                {h.profile && <p className="hero-card-profile">{h.profile}</p>}
               </div>
             ))}
-            <div className="cert-hero">
-              <Glitch className="cert-avatar glitch-defeated" mood="defeated" />
-              <span className="muted small">The Glitch (defeated)</span>
+            <div className="hero-card glitch-card">
+              <div className="hero-card-art" style={{ ['--c' as string]: '#39ff14' }}>
+                <Glitch className="hero-card-avatar" mood="happy" />
+              </div>
+              <div className="hero-card-name">The Glitch</div>
+              <div className="hero-card-power">💛 your new friend</div>
             </div>
           </div>
-          <p className="cert-text">
-            <b>{nameList}</b> saved the <b>Friendship &amp; Hero HQ</b> on {date}.
-            <br />
-            <span className="de">Ihr habt alle Energie-Kerne zurückgeholt und das Haupttor geöffnet!</span>
-          </p>
 
           <div className="stars" aria-label={`${r.stars} von 3 Sternen`}>
             {[1, 2, 3].map((n) => (
@@ -166,26 +147,32 @@ export function CompleteScreen({ onRestart }: { onRestart: () => void }) {
               <span>💡 Tipps</span>
               <b>{state.hintsUsed}</b>
             </div>
-            {state.skipped > 0 && (
-              <div>
-                <span>⏭ Übersprungen</span>
-                <b>{state.skipped}</b>
-              </div>
+          </div>
+
+          <div className={`hall-status hall-${send}`}>
+            {send === 'sending' && '📡 Sending your hero cards to the Hall of Heroes …'}
+            {send === 'sent' && (hallOnline ? '📺 Your hero cards are on the big screen! Look!' : '📺 Hero cards saved (Hall of Heroes – offline mode).')}
+            {send === 'error' && (
+              <>
+                ⚠️ No connection to the Hall of Heroes.{' '}
+                <button className="btn btn-ghost" onClick={doSend}>
+                  Try again
+                </button>
+              </>
             )}
           </div>
 
-          <div className="echo-bye">
-            <Echo className="hint-echo" talking />
-            <div className="bubble bubble-echo">
-              Thank you, heroes! You are reliable, confident and hard-working. Come back soon – the Glitch never sleeps!
-            </div>
+          <div className="row-btns">
+            <button className="btn btn-big btn-yellow pulse-btn" onClick={() => { sfx.power(); setRun(true); }}>
+              🎮 Bonus: Hero Run
+            </button>
+            <button className="btn btn-ghost" onClick={onRestart}>
+              ↻ Neue Mission (nächste Gruppe)
+            </button>
           </div>
-
-          <button className="btn btn-big btn-yellow" onClick={onRestart}>
-            ↻ Neue Mission (nächste Gruppe)
-          </button>
         </div>
       </div>
+      {run && <HeroRun heroes={state.heroes} best={state.bonusHighscore} onScore={onScore} onClose={() => setRun(false)} />}
     </div>
   );
 }

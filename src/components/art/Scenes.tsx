@@ -1,4 +1,6 @@
-import type { RoomMeta } from '../../data/rooms';
+import type { LevelMeta } from '../../data/levels';
+
+type SceneId = LevelMeta['scene'];
 
 const INK = '#141018';
 
@@ -175,15 +177,85 @@ function Gate() {
   );
 }
 
-const SKY: Record<RoomMeta['scene'], [string, string]> = {
+const SKY: Record<SceneId, [string, string]> = {
   lab: ['#1b1446', '#3a0ca3'],
   generator: ['#370617', '#9d0208'],
   vault: ['#0b2545', '#13315c'],
   radio: ['#081c15', '#1b4332'],
   gate: ['#10002b', '#5a189a'],
+  studio: ['#240046', '#7b2cbf'],
+  dark: ['#000000', '#120a1f'],
+  academy: ['#03045e', '#0077b6'],
 };
 
-export function SceneBackdrop({ scene }: { scene: RoomMeta['scene'] }) {
+function Studio() {
+  return (
+    <g>
+      {/* on-air sign */}
+      <rect x={330} y={22} width={140} height={40} rx={8} fill="#e63946" stroke={INK} strokeWidth={4} className="blink-slow" />
+      <text x={400} y={50} textAnchor="middle" fontSize={22} fontWeight={900} fill="#fff">ON AIR</text>
+      {/* microphone */}
+      <rect x={385} y={80} width={30} height={50} rx={15} fill="#adb5bd" stroke={INK} strokeWidth={4} />
+      <path d="M375,110 q25,36 50,0 M400,140 v30" fill="none" stroke={INK} strokeWidth={5} />
+      {/* speakers + sound waves */}
+      {[90, 650].map((x) => (
+        <g key={x}>
+          <rect x={x} y={70} width={60} height={100} rx={6} fill="#22223b" stroke={INK} strokeWidth={4} />
+          <circle cx={x + 30} cy={100} r={14} fill="#4a4e69" stroke={INK} strokeWidth={3} className="pulse" />
+          <circle cx={x + 30} cy={145} r={18} fill="#4a4e69" stroke={INK} strokeWidth={3} className="pulse" />
+        </g>
+      ))}
+      {[0, 1, 2].map((i) => (
+        <path key={i} d={`M${200 + i * 20},${90 - i * 10} q-20,${30 + i * 10} 0,${60 + i * 20} M${600 - i * 20},${90 - i * 10} q20,${30 + i * 10} 0,${60 + i * 20}`} fill="none" stroke="#c77dff" strokeWidth={4} className="blink-slow" style={{ animationDelay: `${i * 0.3}s` }} />
+      ))}
+    </g>
+  );
+}
+
+function Dark() {
+  return (
+    <g>
+      {[120, 300, 500, 680].map((x, i) => (
+        <g key={x} opacity={0.35}>
+          <rect x={x - 30} y={60} width={60} height={110} fill="#1b1b2f" stroke="#333" strokeWidth={3} />
+          <circle cx={x - 8} cy={100} r={3} fill="#ffd60a" className="blink" style={{ animationDelay: `${i * 0.7}s` }} />
+          <circle cx={x + 8} cy={100} r={3} fill="#ffd60a" className="blink" style={{ animationDelay: `${i * 0.7}s` }} />
+        </g>
+      ))}
+      <text x={190} y={150} textAnchor="middle" fontSize={22} fontWeight={900} fill="#ff9f1c" opacity={0.6} className="blink-slow">
+        POWER: 0%
+      </text>
+    </g>
+  );
+}
+
+function Academy() {
+  return (
+    <g>
+      {/* board */}
+      <rect x={250} y={30} width={300} height={120} fill="#1b4332" stroke="#8d5524" strokeWidth={10} />
+      <text x={400} y={78} textAnchor="middle" fontSize={24} fontWeight={900} fill="#fff" fontFamily="Bangers, Impact, sans-serif">
+        hero · save · strong
+      </text>
+      <text x={400} y={116} textAnchor="middle" fontSize={20} fill="#ffd60a" fontFamily="Bangers, Impact, sans-serif">
+        retten = save ✓
+      </text>
+      {/* book shelves */}
+      {[60, 640].map((x) => (
+        <g key={x}>
+          <rect x={x} y={40} width={100} height={130} fill="#6f4518" stroke={INK} strokeWidth={4} />
+          {[0, 1, 2].map((r) =>
+            ['#e63946', '#1e88e5', '#ffd60a', '#2ecc71', '#c77dff'].map((c, k) => (
+              <rect key={`${r}-${k}`} x={x + 8 + k * 18} y={48 + r * 40} width={14} height={32} fill={c} stroke={INK} strokeWidth={2} />
+            )),
+          )}
+        </g>
+      ))}
+    </g>
+  );
+}
+
+export function SceneBackdrop({ scene }: { scene: SceneId }) {
   const [a, b] = SKY[scene];
   return (
     <svg className="scene-svg" viewBox="0 0 800 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -198,12 +270,15 @@ export function SceneBackdrop({ scene }: { scene: RoomMeta['scene'] }) {
       </defs>
       <rect width={800} height={200} fill={`url(#sky-${scene})`} />
       <rect width={800} height={200} fill="url(#dots)" />
-      <Stars n={30} h={110} />
+      {scene !== 'dark' && <Stars n={30} h={110} />}
       {scene === 'lab' && <Lab />}
       {scene === 'generator' && <Generator />}
       {scene === 'vault' && <Vault />}
       {scene === 'radio' && <Radio />}
       {scene === 'gate' && <Gate />}
+      {scene === 'studio' && <Studio />}
+      {scene === 'dark' && <Dark />}
+      {scene === 'academy' && <Academy />}
       <Floor />
     </svg>
   );

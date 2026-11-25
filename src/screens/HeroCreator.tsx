@@ -9,6 +9,7 @@ import {
   HAIR_STYLES,
   MASKS,
   POWERS,
+  SHIRT_COLORS,
   SKIN_TONES,
   SUIT_COLORS,
   fullyRandomHero,
@@ -101,14 +102,22 @@ export function HeroCreator() {
         <h1 className="comic-h">
           Create your hero{state.heroes.length > 1 && <span className="hero-count"> · Player {idx + 1} of {state.heroes.length}</span>}
         </h1>
-        <p className="de">Gestalte deine*n Superheld*in – Name, Superkraft und Look.</p>
+        <p className="de">Heute bist du noch ein normales Kind – nach 8 Leveln bist du Superheld*in! Gestalte beides.</p>
       </div>
 
       <div className="creator-grid">
         <div className="creator-preview panel">
           <div className="preview-stage">
             <div className="preview-glow" style={{ background: hero.look.cape }} />
-            <HeroAvatar key={pop} hero={hero} className="preview-avatar pop-in" />
+            <figure className="preview-now">
+              <HeroAvatar key={`n${pop}`} hero={hero} gear={0} className="preview-avatar-small pop-in" />
+              <figcaption>today 👕</figcaption>
+            </figure>
+            <span className="preview-arrow">➜</span>
+            <figure className="preview-hero">
+              <HeroAvatar key={pop} hero={hero} gear={8} className="preview-avatar pop-in" />
+              <figcaption>after level 8 🦸</figcaption>
+            </figure>
           </div>
           <div className="name-row">
             <input
@@ -175,7 +184,8 @@ export function HeroCreator() {
 
           {tab === 'colours' && (
             <>
-              <Swatches label="Suit / Anzug" colors={SUIT_COLORS} value={hero.look.suit} onPick={(c) => look({ suit: c })} />
+              <Swatches label="T-shirt today / T-Shirt (normales Kind)" colors={SHIRT_COLORS} value={hero.look.shirt} onPick={(c) => look({ shirt: c })} />
+              <Swatches label="Hero suit / Heldenanzug" colors={SUIT_COLORS} value={hero.look.suit} onPick={(c) => look({ suit: c })} />
               <Swatches label="Cape / Umhang" colors={CAPE_COLORS} value={hero.look.cape} onPick={(c) => look({ cape: c })} />
               <Swatches label="Skin / Hautfarbe" colors={SKIN_TONES} value={hero.look.skin} onPick={(c) => look({ skin: c })} />
             </>

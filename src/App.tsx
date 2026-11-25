@@ -6,8 +6,9 @@ import { TeacherMenu } from './components/TeacherMenu';
 import { ConfirmDialog } from './components/ui';
 import { TitleScreen, PlayerSelect, Briefing } from './screens/StartScreens';
 import { HeroCreator } from './screens/HeroCreator';
-import { RoomScreen } from './screens/RoomScreen';
-import { TransitionScreen, CompleteScreen } from './screens/EndScreens';
+import { LevelScreen } from './screens/LevelScreen';
+import { RewardScreen } from './screens/RewardScreen';
+import { CompleteScreen } from './screens/EndScreens';
 import { sfx } from './audio/sound';
 
 function Shell() {
@@ -50,8 +51,8 @@ function Shell() {
         {state.phase === 'players' && <PlayerSelect />}
         {state.phase === 'creator' && <HeroCreator />}
         {state.phase === 'briefing' && <Briefing />}
-        {state.phase === 'room' && <RoomScreen />}
-        {state.phase === 'transition' && <TransitionScreen />}
+        {state.phase === 'level' && <LevelScreen />}
+        {state.phase === 'reward' && <RewardScreen />}
         {state.phase === 'complete' && <CompleteScreen onRestart={reset} />}
       </div>
 

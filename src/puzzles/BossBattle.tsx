@@ -16,7 +16,7 @@ const TAUNTS = [
   'Bzzt… system error…',
 ];
 
-export function BossBattle({ heroes, onCorrect, onWrong, onSolved }: PuzzleProps) {
+export function BossBattle({ heroes, gear, onCorrect, onWrong, onSolved }: PuzzleProps) {
   const [q, setQ] = useState(0);
   const [hp, setHp] = useState(BOSS_QUESTIONS.length);
   const [bad, setBad] = useState<string[]>([]);
@@ -62,7 +62,7 @@ export function BossBattle({ heroes, onCorrect, onWrong, onSolved }: PuzzleProps
     <div className="boss">
       <div className="arena">
         <div className="arena-hero">
-          <HeroAvatar key={q} hero={hero} className={`arena-hero-svg ${locked ? 'attack' : 'bob'}`} />
+          <HeroAvatar key={q} hero={hero} gear={gear} className={`arena-hero-svg ${locked ? 'attack' : 'bob'}`} />
           <div className="turn-label">
             {heroes.length > 1 ? <>{hero.name}'s turn!</> : <>{hero.name}, attack!</>}
             <span className="small"> {powerInfo(hero.power).icon}</span>

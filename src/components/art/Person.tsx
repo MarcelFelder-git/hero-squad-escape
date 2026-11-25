@@ -11,6 +11,14 @@ export interface PersonProps {
   accessory?: Accessory;
   glasses?: boolean;
   braces?: boolean;
+  /** trousers colour (jeans before the hero suit arrives) */
+  legs?: string;
+  gloves?: string;
+  boots?: string;
+  belt?: boolean;
+  /** glowing power aura colour */
+  aura?: string;
+  flying?: boolean;
   /** show only head + shoulders */
   bust?: boolean;
   className?: string;
@@ -88,23 +96,50 @@ export function Person(p: PersonProps) {
   const vb = p.bust ? '20 10 80 100' : '0 0 120 170';
 
   return (
-    <svg viewBox={vb} className={p.className} role="img" aria-label={p.title ?? 'person'}>
+    <svg viewBox={vb} className={`${p.className ?? ''} ${p.flying ? 'is-flying' : ''}`} role="img" aria-label={p.title ?? 'person'}>
+      {p.aura && <ellipse cx={60} cy={92} rx={56} ry={78} fill={p.aura} opacity={0.35} className="aura-pulse" />}
+      {p.flying && !p.bust && (
+        <g stroke="#ffffff" strokeWidth={3} strokeLinecap="round" opacity={0.8} className="wind">
+          <path d="M40,168 v-0 M38,166 h-14 M86,166 h14 M50,169 h-8 M78,169 h8" />
+        </g>
+      )}
       {/* cape */}
       {p.cape && (
         <path d="M40,84 C28,110 22,140 16,166 L104,166 C98,140 92,110 80,84Z" fill={p.cape} stroke={INK} strokeWidth={3} strokeLinejoin="round" />
       )}
       {/* legs */}
-      <rect x={45} y={124} width={13} height={36} rx={4} fill={darken(p.suit, 0.35)} stroke={INK} strokeWidth={3} />
-      <rect x={62} y={124} width={13} height={36} rx={4} fill={darken(p.suit, 0.35)} stroke={INK} strokeWidth={3} />
-      <path d="M42,156 h18 v8 h-20z M60,156 h18 l2,8 h-20z" fill={INK} />
+      <rect x={45} y={124} width={13} height={36} rx={4} fill={p.legs ?? darken(p.suit, 0.35)} stroke={INK} strokeWidth={3} />
+      <rect x={62} y={124} width={13} height={36} rx={4} fill={p.legs ?? darken(p.suit, 0.35)} stroke={INK} strokeWidth={3} />
+      {p.boots ? (
+        <g fill={p.boots} stroke={INK} strokeWidth={2.5} strokeLinejoin="round">
+          <path d="M43,142 h16 v22 h-21 v-6 h5z" />
+          <path d="M61,142 h16 v16 h5 v6 h-21z" />
+          <path d="M43,146 h16 M61,146 h16" stroke="#ffffff" strokeOpacity={0.6} />
+        </g>
+      ) : (
+        <g stroke={INK} strokeWidth={2.5} strokeLinejoin="round">
+          <path d="M42,155 h18 v9 h-20z" fill="#f8f9fa" />
+          <path d="M60,155 h18 l2,9 h-20z" fill="#f8f9fa" />
+          <path d="M41,161 h19 M61,161 h19" stroke="#e63946" strokeWidth={2} />
+        </g>
+      )}
       {/* arms */}
       <rect x={27} y={84} width={13} height={40} rx={6} fill={p.suit} stroke={INK} strokeWidth={3} transform="rotate(8 33 84)" />
       <rect x={80} y={84} width={13} height={40} rx={6} fill={p.suit} stroke={INK} strokeWidth={3} transform="rotate(-8 87 84)" />
-      <circle cx={29} cy={125} r={6} fill={p.skin} stroke={INK} strokeWidth={2.5} />
-      <circle cx={91} cy={125} r={6} fill={p.skin} stroke={INK} strokeWidth={2.5} />
+      <circle cx={29} cy={125} r={p.gloves ? 7.5 : 6} fill={p.gloves ?? p.skin} stroke={INK} strokeWidth={2.5} />
+      <circle cx={91} cy={125} r={p.gloves ? 7.5 : 6} fill={p.gloves ?? p.skin} stroke={INK} strokeWidth={2.5} />
       {/* torso */}
       <rect x={38} y={78} width={44} height={52} rx={12} fill={p.suit} stroke={INK} strokeWidth={3} />
-      <path d="M40,118 h40" stroke={darken(p.suit, 0.4)} strokeWidth={5} />
+      {p.belt ? (
+        <g>
+          <rect x={38} y={113} width={44} height={9} fill="#ffd60a" stroke={INK} strokeWidth={2.5} />
+          <rect x={54} y={111} width={12} height={13} rx={2} fill="#adb5bd" stroke={INK} strokeWidth={2.5} />
+          <rect x={41} y={115} width={6} height={5} fill="#39ff14" />
+          <rect x={73} y={115} width={6} height={5} fill="#ff006e" />
+        </g>
+      ) : (
+        <path d="M40,118 h40" stroke={darken(p.suit, 0.4)} strokeWidth={5} />
+      )}
       {p.emblem && (
         <>
           <circle cx={60} cy={98} r={12} fill={darken(p.suit, 0.3)} stroke={INK} strokeWidth={2.5} />

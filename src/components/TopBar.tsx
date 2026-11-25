@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../game/GameContext';
-import { formatTime } from '../game/state';
-import { ROOMS } from '../data/rooms';
+import { formatTime, gearCount } from '../game/state';
+import { LEVELS } from '../data/levels';
 import { powerInfo } from '../data/heroOptions';
 import { HeroAvatar } from './art/HeroAvatar';
+import { RocketIcon } from './art/Rocket';
 import { sfx } from '../audio/sound';
 
 const TARGET_MS = 20 * 60_000;
@@ -16,33 +17,18 @@ function Timer({ startedAt, finishedAt }: { startedAt: number; finishedAt: numbe
     return () => clearInterval(t);
   }, [finishedAt]);
   const ms = (finishedAt ?? now) - startedAt;
-  const pct = Math.min(100, (ms / TARGET_MS) * 100);
-  const over = ms > TARGET_MS;
   return (
-    <div className={`timer ${over ? 'timer-over' : ''}`} title="Richtwert: ca. 20 Minuten">
-      <span className="timer-icon">⏱</span>
-      <div className="timer-body">
-        <div className="timer-text">{formatTime(ms)}</div>
-        <div className="timer-bar">
-          <div style={{ width: `${pct}%` }} />
-        </div>
-      </div>
+    <div className={`timer ${ms > TARGET_MS ? 'timer-over' : ''}`} title="Richtwert: ca. 20 Minuten">
+      ⏱ <span>{formatTime(ms)}</span>
     </div>
   );
 }
 
-export function TopBar({
-  onGlossary,
-  onRestart,
-  onTeacher,
-}: {
-  onGlossary: () => void;
-  onRestart: () => void;
-  onTeacher: () => void;
-}) {
+export function TopBar({ onGlossary, onRestart, onTeacher }: { onGlossary: () => void; onRestart: () => void; onTeacher: () => void }) {
   const { state, dispatch } = useGame();
   const taps = useRef<number[]>([]);
-  const inMission = state.phase === 'room' || state.phase === 'transition';
+  const inMission = state.phase === 'level' || state.phase === 'reward' || state.phase === 'complete';
+  const gear = gearCount(state);
 
   const logoTap = () => {
     const now = Date.now();
@@ -57,63 +43,40 @@ export function TopBar({
     <header className="topbar">
       <button className="logo" onClick={logoTap} aria-label="Hero Squad">
         <span className="logo-badge">HS</span>
-        <span className="logo-text">
-          HERO <b>SQUAD</b>
-        </span>
       </button>
 
       {state.heroes.length > 0 && state.phase !== 'creator' && (
         <div className="teambar">
           {state.heroes.map((h, i) => (
             <div className="team-hero" key={i} title={`${h.name} – ${powerInfo(h.power).name}`}>
-              <HeroAvatar hero={h} bust className="team-avatar" />
-              <div className="team-meta">
-                <span className="team-name">{h.name}</span>
-                <span className="team-power">
-                  {powerInfo(h.power).icon} {powerInfo(h.power).name}
-                </span>
-              </div>
+              <HeroAvatar hero={h} gear={gear} bust className="team-avatar" />
+              <span className="team-name">{h.name}</span>
             </div>
           ))}
         </div>
       )}
 
       {inMission && (
-        <div className="progress-box">
-          <div className="progress-label">
-            Room {state.roomIndex + 1}/{ROOMS.length}
-          </div>
-          <div className="progress-dots">
-            {ROOMS.map((r, i) => (
-              <span
-                key={r.id}
-                className={`pdot ${i < state.roomIndex || (i === state.roomIndex && state.phase === 'transition') ? 'done' : ''} ${i === state.roomIndex ? 'current' : ''}`}
-                style={{ ['--core' as string]: r.coreColor }}
-              />
-            ))}
-          </div>
+        <div className="rocket-track" aria-label={`Level ${state.levelIndex + 1} von ${LEVELS.length}`}>
+          {LEVELS.map((l, i) => {
+            const done = i < gear;
+            const current = state.phase === 'level' && i === state.levelIndex;
+            return (
+              <span key={l.id} className={`rocket-slot ${done ? 'done' : ''} ${current ? 'current' : ''}`} style={{ ['--c' as string]: l.color }}>
+                <RocketIcon color={done ? l.color : '#7d76b3'} />
+              </span>
+            );
+          })}
         </div>
       )}
 
-      {inMission && state.startedAt && <Timer startedAt={state.startedAt} finishedAt={state.finishedAt} />}
-      {inMission && (
-        <div className="score" title="Punkte">
-          ★ <b>{state.score}</b>
-        </div>
-      )}
-
-      <div className="top-actions">
+      <div className="top-right">
+        {inMission && state.startedAt && <Timer startedAt={state.startedAt} finishedAt={state.finishedAt} />}
+        {inMission && <div className="score">★ {state.score}</div>}
         <button className="icon-btn" onClick={() => { sfx.click(); onGlossary(); }} aria-label="Glossar" title="Hero Field Glossary">
           📖
         </button>
-        <button
-          className="icon-btn"
-          onClick={() => {
-            dispatch({ type: 'TOGGLE_MUTE' });
-          }}
-          aria-label={state.muted ? 'Ton an' : 'Ton aus'}
-          title={state.muted ? 'Ton an' : 'Ton aus'}
-        >
+        <button className="icon-btn" onClick={() => dispatch({ type: 'TOGGLE_MUTE' })} aria-label={state.muted ? 'Ton an' : 'Ton aus'}>
           {state.muted ? '🔇' : '🔊'}
         </button>
         {state.phase !== 'title' && (

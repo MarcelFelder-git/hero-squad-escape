@@ -1,10 +1,15 @@
 const INK = '#141018';
 
 /** The villain: a glitchy robot with a TV-screen face. */
-export function Glitch({ className, mood = 'evil' }: { className?: string; mood?: 'evil' | 'angry' | 'defeated' }) {
+export function Glitch({ className, mood = 'evil' }: { className?: string; mood?: 'evil' | 'angry' | 'defeated' | 'happy' }) {
   const face = (dx: number, color: string, op = 1) => (
     <g transform={`translate(${dx} 0)`} opacity={op}>
-      {mood === 'defeated' ? (
+      {mood === 'happy' ? (
+        <>
+          <path d="M46,58 q7,-9 14,0 M80,58 q7,-9 14,0" fill="none" stroke={color} strokeWidth={5} />
+          <path d="M50,74 q20,18 40,0" fill="none" stroke={color} strokeWidth={5} />
+        </>
+      ) : mood === 'defeated' ? (
         <>
           <path d="M48,52 l10,10 M58,52 l-10,10 M82,52 l10,10 M92,52 l-10,10" stroke={color} strokeWidth={5} strokeLinecap="square" />
           <path d="M55,82 q15,-10 30,0" fill="none" stroke={color} strokeWidth={5} />

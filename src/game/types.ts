@@ -3,8 +3,11 @@ export type HairStyle = 'curly' | 'straight' | 'spiky' | 'short';
 export type MaskStyle = 'none' | 'eyemask' | 'visor' | 'goggles';
 export type Emblem = 'star' | 'bolt' | 'heart' | 'shield' | 'moon';
 export type Accessory = 'none' | 'glasses' | 'braces' | 'headphones' | 'antenna';
+export type Pronoun = 'he' | 'she' | 'they';
 
 export interface HeroLook {
+  /** everyday t-shirt colour (before the hero suit arrives) */
+  shirt: string;
   suit: string;
   cape: string;
   skin: string;
@@ -19,18 +22,16 @@ export interface Hero {
   name: string;
   power: PowerId;
   look: HeroLook;
+  /** text the kids write in the "Hero profile" task */
+  profile?: string;
 }
 
-export type Phase =
-  | 'title'
-  | 'players'
-  | 'creator'
-  | 'briefing'
-  | 'room'
-  | 'transition'
-  | 'complete';
+/** Gear pieces – one arrives by rocket after every level */
+export type GearId = 'mask' | 'suit' | 'gloves' | 'boots' | 'belt' | 'cape' | 'power' | 'flight';
 
-export interface RoomStat {
+export type Phase = 'title' | 'players' | 'creator' | 'briefing' | 'level' | 'reward' | 'complete';
+
+export interface LevelStat {
   mistakes: number;
   hints: number;
   freeHintUsed: boolean;
@@ -49,9 +50,10 @@ export interface GameState {
   playerCount: 1 | 2 | 3;
   heroes: Hero[];
   creatorIndex: number;
-  roomIndex: number;
+  levelIndex: number;
   stageIndex: number;
-  showRoomIntro: boolean;
+  /** 'event' (hack / call) → 'intro' (splash) → 'play' */
+  levelStep: 'event' | 'intro' | 'play';
   hintLevel: number;
   startedAt: number | null;
   finishedAt: number | null;
@@ -60,18 +62,26 @@ export interface GameState {
   mistakes: number;
   hintsUsed: number;
   skipped: number;
-  roomStats: RoomStat[];
+  levelStats: LevelStat[];
   muted: boolean;
   toast: Toast | null;
+  /** came in through the QR code of the worksheet */
+  viaQr: boolean;
+  hallSent: boolean;
+  bonusHighscore: number;
 }
 
 /** Props every puzzle component receives. */
 export interface PuzzleProps {
   heroes: Hero[];
+  /** how many levels are complete = how much gear the heroes wear */
+  gear: number;
   /** call on every correct partial answer (gives points + sound) */
   onCorrect: (points?: number) => void;
   /** call on every wrong attempt */
   onWrong: () => void;
   /** call once when the whole stage is solved */
   onSolved: () => void;
+  /** update a hero (used by the hero-profile writing task) */
+  updateHero?: (index: number, hero: Hero) => void;
 }

@@ -1,78 +1,88 @@
-# 🦸 Hero Squad – Escape from The Glitch
+# 🦸 Hero Squad – Escape from The Glitch (v2)
 
 Escape-Room-Browserspiel für **Englisch Klasse 6** (Tag der offenen Tür).
-1–3 Spieler*innen an einem Gerät · ca. 20 Minuten · 5 Räume · läuft komplett offline im Browser.
+1–3 Spieler*innen an einem Gerät · ca. 20–25 Minuten · 8 Level · vom normalen Kind zum Superhelden.
 
-## Auf dem iPad spielen (am einfachsten)
+**Live:** https://hero-squad-escape.vercel.app
 
-1. Doppelklick auf **`iPad-Server-starten.bat`** (beim ersten Mal werden die Pakete installiert, ca. 1 Minute).
-2. Fragt Windows nach der Firewall → **„Zugriff zulassen“**.
-3. Im Fenster erscheint eine Zeile `Network: http://192.168.…:4173` → genau diese Adresse auf dem iPad in Safari eintippen.
-   iPad und PC müssen im **selben WLAN** sein. Das Fenster offen lassen, solange gespielt wird.
-4. Optional: Safari → Teilen → **„Zum Home-Bildschirm“** → Spiel startet im Vollbild.
+## Ablauf am Tag der offenen Tür
 
-Klappt es nicht? Häufigste Ursachen: Windows stuft das Netzwerk als „Öffentlich“ ein (dann blockt die Firewall –
-in den Windows-Netzwerkeinstellungen auf „Privat“ stellen) oder das Schul-WLAN trennt Geräte voneinander
-(dann einen Hotspot vom PC/Handy nutzen oder die `dist/`-Version auf einen Webserver legen).
-
-## Starten (Entwicklung)
-
-```bash
-npm install
-npm run dev        # Entwicklungsserver, auch im WLAN erreichbar (--host)
-npm run build      # statische Version in dist/
-npm run preview    # gebaute Version testen
-```
-
-Der Ordner `dist/` kann auf jeden beliebigen Webserver kopiert werden (Schulserver, GitHub Pages,
-Netlify …). Es gibt **kein Backend**: Der Spielstand liegt im `localStorage` des Geräts.
-
-**iPad-Tipp:** Seite in Safari öffnen → Teilen → „Zum Home-Bildschirm“ → läuft dann im Vollbild.
-
-## Ablauf
-
-| Raum | Thema | Rätsel |
+| Schritt | Was | Seite |
 |---|---|---|
-| 1 · The ID Lab | Wortschatz *friends & heroes* | Kabel verbinden (EN ↔ DE) · Spion per Personenbeschreibung finden (*tall, curly, glasses, braces …*) |
-| 2 · The Power Generator | Simple present | *Spot the grammar bug* (*doesn't goes*, *Do Lina …*) · Sätze/Fragen aus Wortblöcken bauen (mit Fallen-Block) |
-| 3 · The Time Vault | Simple past | Tresor-Räder mit unregelmäßigen Verben · Lückentext im Tagebuch (*didn't see*, *Did … hear?*) |
-| 4 · The Radio Room | Question words | Fragewörter zu Zeugenaussagen · Lese-Rätsel → Funkfrequenz-Code |
-| 5 · The Main Gate | alles gemischt | Endkampf gegen The Glitch (Spieler kommen reihum dran) · Passwort **TEAM** aus Vokabel-Lücken |
+| 1. Intro | Comic-Story auf dem Beamer (iPad spiegeln), mit Publikumsfragen und Countdown | `/presenter` (PIN **4242**) |
+| 2. Arbeitsblatt | Geschichte lesen, A/B/C ankreuzen, Codes im QR-Raster schwarz malen → mit dem iPad scannen | `/worksheet` (drucken) |
+| 3. iPads | Der QR-Code öffnet das Spiel mit „ACCESS GRANTED“. 8 Level, nach jedem Level bringt eine Rakete Ausrüstung | `/` |
+| 4. Finale | Jedes fertige Team erscheint live auf dem Beamer, am Ende Button **🎉 Finale** | `/hall` |
 
-- **Hints:** pro Rätsel 2 Stufen (kleiner Tipp / fast die Lösung), kosten ein paar Punkte.
-- **📖 Hero Field Glossary:** komplette Vokabelliste (Unit 2, Topic 1+2, unregelmäßige Verben, Grammatik-Spickzettel), durchsuchbar, mit Vorlesefunktion.
-- **🔊 Vorlesen:** Sätze werden mit der Systemstimme (en-GB) vorgelesen.
-- **Superkräfte:** Speedster (−1 min Endzeit), Mind-Hacker (1. Tipp pro Raum gratis), Time-Bender (1. Fehler pro Raum zählt nicht), Shield-Guardian (Fehler im Endkampf gratis), Gadget-Genius (+20 Punkte pro Raum).
-- **Kein Game Over:** Nach ca. 20 Minuten wird der Timer nur orange. Am Ende gibt es Zeit, Punkte, 1–3 Sterne und einen Rang.
+Die Links zu allen Seiten stehen auch im Lehrkräfte-Menü.
+
+## Die 8 Level
+
+| Level | Thema | Aufgaben | Belohnung |
+|---|---|---|---|
+| 1 · The ID Lab | Wortschatz | Kabel verbinden · Spion finden · **Vocab Blitz** EN→DE mit Combo | 🎭 Maske |
+| 2 · Power Generator | Simple present | Grammar bugs · Sätze bauen | 🦸 Anzug |
+| 3 · Hero Radio 101.5 | Listening | **Überraschung: Tablet gehackt!** Bugs zerdrücken · Radio-Show: true / false / not in the text | 🧤 Handschuhe |
+| 4 · Time Vault | Simple past | Tresor · Tagebuch · **Fragemaschine** (Fragen aus Stichwörtern) | 🥾 Stiefel |
+| 5 · Lights Out! | Reading | **Überraschung: Videoanruf vom Glitch → Stromausfall.** Lesen mit Finger-Taschenlampe, Lückenwörter im Text antippen | 🔋 Gürtel |
+| 6 · Radio Room | Question words | Fragewörter · Funkfrequenz | 🧣 Cape |
+| 7 · Vocab Academy | Wortschatz | **Vocab Blitz** DE→EN · **Spelling Lab** · **Brief-Lückentext** mit Wortkasten | ⚡ Superkraft |
+| 8 · Main Gate | alles | Endkampf · **Wendung: Glitch wird Freund** · **Helden-Steckbrief** (he/she/they, has/have, is/are) · Passwort TEAM | 🚀 Fliegen |
+
+Die neuen Aufgaben üben die **Formate** der Klassenarbeit Unit 2 (Hören true/false/not in the text, Lesen mit Lücken,
+Simple-past-Fragen aus Stichwörtern, Personenbeschreibung) – mit komplett neuen Inhalten.
+Nur Vokabeln aus der Vokabelliste.
+
+Abschluss: Heldenkarten mit Steckbrief, Sterne, Zeit → automatisch in die **Hall of Heroes**. Bonus: **Hero Run**
+(Jump'n'Run mit dem eigenen Helden).
+
+## Hall of Heroes live schalten (Supabase, kostenlos)
+
+Ohne Supabase funktioniert alles – die Hall zeigt dann aber nur Teams **vom selben Gerät** („OFFLINE“).
+Für die Live-Anzeige von allen iPads:
+
+1. Auf https://supabase.com ein kostenloses Projekt anlegen (Region **Frankfurt / eu-central-1**).
+2. **SQL Editor → New query** → Inhalt von `supabase/hall.sql` einfügen → **Run**.
+3. **Project Settings → API**: `Project URL` und den `anon public` Key kopieren.
+4. In Vercel → Projekt → **Settings → Environment Variables** eintragen und neu deployen:
+   - `VITE_SUPABASE_URL` = Project URL
+   - `VITE_SUPABASE_ANON_KEY` = anon key
+5. Für lokale Tests dieselben zwei Zeilen in eine Datei `.env.local` schreiben.
+
+Gespeichert werden nur Fantasie-Heldennamen, Avatar-Farben, Steckbrief-Sätze, Punkte und Zeit – keine Fotos, keine echten Namen.
+Nach dem Tag: in Supabase `delete from public.hall;` ausführen (oder das Projekt löschen).
+In der Hall: 🧹 blendet alle bisherigen Teams aus (z. B. nach dem Testen).
+
+## QR-Arbeitsblatt
+
+- `/worksheet` im Browser öffnen → **Drucken** (A4, Seite 1+2 für die Kinder, Seite 3 = Lösung für Lehrkräfte).
+- Lösung: **1A 2B 3C 4A 5A 6B 7C 8A**. Ein einzelner Fehler wird von der QR-Fehlerkorrektur noch verziehen,
+  bei mehreren Fehlern funktioniert der Code nicht. Ein unausgemaltes Blatt lässt sich nicht scannen.
+- Das Raster wird mit `node scripts/make-qr-layout.mjs` erzeugt und dabei automatisch geprüft
+  (gelöst = lesbar, leer = nicht lesbar, ein Fehler = noch lesbar).
+
+## Auf dem iPad spielen ohne Internet
+
+1. Doppelklick auf **`iPad-Server-starten.bat`**.
+2. Windows-Firewall → **„Zugriff zulassen“** (Netzwerk muss in Windows auf „Privat“ stehen).
+3. Die angezeigte Adresse `http://192.168.…:4173` auf dem iPad in Safari öffnen (gleiches WLAN).
 
 ## Für Lehrkräfte / Betreuer
 
-- **Lehrkräfte-Menü:** 5× schnell auf das **HS-Logo** oben links tippen (iPad) oder `Strg`+`Shift`+`L`.
-  Dort: Aufgabe/Raum überspringen, direkt zu einem Raum springen, Mission beenden, alles zurücksetzen.
-  Außerdem wird die Lösungshilfe des aktuellen Rätsels angezeigt.
-- **Nächste Gruppe:** Button **↻** oben rechts (mit Sicherheitsabfrage) oder „Neue Mission“ auf dem Abschluss-Screen.
-- **Versehentlich neu geladen?** Kein Problem: Der Spielstand (Helden, Raum, Punkte, Zeit) wird automatisch gespeichert.
-  Nur das gerade offene Rätsel beginnt von vorn.
+- **Lehrkräfte-Menü:** 5× schnell auf das **HS-Logo** oben links tippen oder `Strg`+`Shift`+`L`.
+  Aufgabe/Level überspringen, zu Level springen, Mission beenden, zurücksetzen, Links zu Presenter / Hall / Arbeitsblatt.
+- **Nächste Gruppe:** **↻** oben rechts oder „Neue Mission“ am Ende.
+- Spielstand wird automatisch gespeichert (Neuladen ist kein Problem).
 
-## Inhalte anpassen
+## Entwicklung
 
-Alle Texte liegen getrennt vom Code:
-
-- `src/data/puzzles.ts` – alle Rätselinhalte (bei Auswahl-Optionen ist immer die **erste** die richtige; sie werden im Spiel gemischt)
-- `src/data/rooms.ts` – Story-Texte, Hints, Team-Rollen pro Rätsel
-- `src/data/vocab.ts` – Glossar / Vokabelliste
-- `src/data/heroOptions.ts` – Superkräfte, Farben, Namensgenerator
-
-## Technik
-
-React 19 · TypeScript · Vite · reines CSS · SVG-Grafiken im Code · Sounds per Web Audio API (keine Audiodateien) · keine externen Schriften oder Server.
-
+```bash
+npm install
+npm run dev        # Entwicklungsserver
+npm run build      # Typecheck + statische Version in dist/
 ```
-src/
-  game/        Zustand (Reducer), Speicherung, Punkte & Superkräfte
-  data/        Inhalte (Räume, Rätsel, Vokabeln, Helden-Optionen)
-  audio/       Sound-Synth & Vorlesen
-  components/  Topbar, Glossar, Lehrkräfte-Menü, SVG-Art (Helden, Glitch, Szenen)
-  screens/     Start, Spielerwahl, Helden-Creator, Briefing, Raum, Abschluss
-  puzzles/     die 10 Rätsel-Komponenten
-```
+
+Inhalte: `src/data/levels.ts` (Level, Hints, Rollen), `src/data/puzzles.ts` (v1-Aufgaben), `src/data/puzzles2.ts` (neue Aufgaben,
+Arbeitsblatt-Geschichte), `src/data/vocab.ts` (Glossar). Bei Auswahl-Optionen ist immer die **erste** richtig (wird gemischt).
+
+React 19 · TypeScript · Vite · reines CSS · SVG-Grafiken · Web-Audio-Sounds · Sprachausgabe des Geräts · optional Supabase.

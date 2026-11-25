@@ -1,11 +1,12 @@
 import { useGame } from '../game/GameContext';
-import { ROOMS } from '../data/rooms';
+import { LEVELS } from '../data/levels';
 import { Modal } from './ui';
 
 export function TeacherMenu({ onClose }: { onClose: () => void }) {
   const { state, dispatch } = useGame();
-  const inRoom = state.phase === 'room';
-  const stage = inRoom ? ROOMS[state.roomIndex].stages[state.stageIndex] : null;
+  const inLevel = state.phase === 'level';
+  const level = LEVELS[state.levelIndex];
+  const stage = inLevel ? level.stages[state.stageIndex] : null;
 
   const act = (fn: () => void) => {
     fn();
@@ -21,7 +22,7 @@ export function TeacherMenu({ onClose }: { onClose: () => void }) {
 
       {stage && (
         <div className="teacher-box">
-          <b>Aktuell:</b> Raum {state.roomIndex + 1} „{ROOMS[state.roomIndex].name}“ – {stage.title}
+          <b>Aktuell:</b> Level {state.levelIndex + 1} „{level.name}“ – {stage.title}
           <div className="teacher-solution">
             <b>Lösungshilfe:</b> {stage.hints[1]}
           </div>
@@ -29,28 +30,28 @@ export function TeacherMenu({ onClose }: { onClose: () => void }) {
       )}
 
       <div className="teacher-grid">
-        <button className="btn btn-yellow" disabled={!inRoom} onClick={() => act(() => dispatch({ type: 'SKIP_STAGE' }))}>
+        <button className="btn btn-yellow" disabled={!inLevel} onClick={() => act(() => dispatch({ type: 'SKIP_STAGE' }))}>
           ⏭ Aufgabe überspringen
         </button>
         <button
           className="btn btn-yellow"
-          disabled={!inRoom}
+          disabled={!inLevel}
           onClick={() =>
             act(() => {
-              const rest = ROOMS[state.roomIndex].stages.length - state.stageIndex;
+              const rest = level.stages.length - state.stageIndex;
               for (let i = 0; i < rest; i++) dispatch({ type: 'SKIP_STAGE' });
             })
           }
         >
-          ⏩ Ganzen Raum überspringen
+          ⏩ Ganzes Level überspringen
         </button>
       </div>
 
-      <h3>Direkt zu Raum springen</h3>
-      <div className="teacher-grid">
-        {ROOMS.map((r, i) => (
-          <button key={r.id} className="btn btn-ghost" onClick={() => act(() => dispatch({ type: 'JUMP_ROOM', room: i }))}>
-            {i + 1}. {r.name}
+      <h3>Direkt zu Level springen</h3>
+      <div className="teacher-grid three">
+        {LEVELS.map((l, i) => (
+          <button key={l.id} className="btn btn-ghost" onClick={() => act(() => dispatch({ type: 'JUMP_LEVEL', level: i }))}>
+            {i + 1}. {l.name}
           </button>
         ))}
       </div>
@@ -62,11 +63,24 @@ export function TeacherMenu({ onClose }: { onClose: () => void }) {
           disabled={state.phase === 'complete' || !state.heroes.length}
           onClick={() => act(() => dispatch({ type: 'FINISH' }))}
         >
-          🏁 Mission sofort beenden (Abschluss-Screen)
+          🏁 Mission sofort beenden
         </button>
         <button className="btn btn-red" onClick={() => act(() => dispatch({ type: 'RESET' }))}>
           ↻ Komplett zurücksetzen
         </button>
+      </div>
+
+      <h3>Seiten für die Präsentation</h3>
+      <div className="teacher-grid three">
+        <a className="btn btn-ghost" href="/presenter" target="_blank" rel="noreferrer">
+          🎬 Intro / Presenter
+        </a>
+        <a className="btn btn-ghost" href="/hall" target="_blank" rel="noreferrer">
+          🏆 Hall of Heroes
+        </a>
+        <a className="btn btn-ghost" href="/worksheet" target="_blank" rel="noreferrer">
+          🖨 QR-Arbeitsblatt
+        </a>
       </div>
     </Modal>
   );
