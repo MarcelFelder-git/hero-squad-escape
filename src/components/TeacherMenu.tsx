@@ -59,18 +59,15 @@ export function TeacherMenu({ onClose }: { onClose: () => void }) {
 
       <h3>Aufgaben-Set</h3>
       <p className="muted small">
-        Set A = Wörter vom ersten Testlauf, Set B = neue Wörter und Sätze (gleiche Rätsel). Jede neue Gruppe bekommt automatisch
-        abwechselnd A/B. Wechsel startet die aktuelle Aufgabe neu.
+        Set B = Tag der offenen Tür (jede neue Gruppe bekommt automatisch Set B). Set A = Wörter vom Testlauf – gilt nur für
+        das laufende Spiel. Wechsel startet die aktuelle Aufgabe neu.
       </p>
       <div className="teacher-grid">
         {[0, 1].map((v) => (
           <button
             key={v}
             className={`btn ${state.variant === v ? 'btn-yellow' : 'btn-ghost'}`}
-            onClick={() => {
-              localStorage.setItem('hero-variant-last', String(v));
-              dispatch({ type: 'SET_VARIANT', variant: v });
-            }}
+            onClick={() => dispatch({ type: 'SET_VARIANT', variant: v })}
           >
             {state.variant === v ? '✔ ' : ''}Set {v === 0 ? 'A' : 'B'}
           </button>

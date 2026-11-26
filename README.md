@@ -86,8 +86,9 @@ In der Hall: 🧹 blendet alle bisherigen Teams aus (z. B. nach dem Testen).
   Aufgabe/Level überspringen, zu Level springen, Mission beenden, zurücksetzen, Links zu Presenter / Hall / Arbeitsblatt.
 - **Nächste Gruppe:** **↻** oben rechts oder „Neue Mission“ am Ende.
 - Spielstand wird automatisch gespeichert (Neuladen ist kein Problem).
-- **Aufgaben-Sets A/B:** Gleiche Aufgabentypen, andere Sätze und Wörter (nur Wörter aus der Vokabelliste). Die Sets wechseln
-  automatisch pro Gruppe und Gerät ab; im Lehrkräfte-Menü unter „Aufgaben-Set“ umstellbar.
+- **Aufgaben-Sets A/B:** Gleiche Aufgabentypen, andere Sätze und Wörter (nur Wörter aus der Vokabelliste). Set A war der Testlauf,
+  **jede neue Gruppe spielt automatisch Set B** (Tag der offenen Tür). Im Lehrkräfte-Menü unter „Aufgaben-Set“ lässt sich
+  das laufende Spiel auf A umstellen.
 - **„Lock him up!“** beim Glitch: Ein Käfig fällt, der Glitch weint, Echo fragt „Is that what real heroes do?“ – kein Punktabzug,
   die Gruppe muss sich für Freundschaft entscheiden.
 - **Bonus: Hero Run** (nach Level 8): ◀ ▶ laufen, **JUMP** springen (länger halten = höher). Auf Bugs springen, ⚡ sammeln,

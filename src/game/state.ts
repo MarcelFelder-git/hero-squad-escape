@@ -40,7 +40,7 @@ export function initialState(muted = false): GameState {
     viaQr: false,
     hallSent: false,
     bonusHighscore: 0,
-    variant: 0,
+    variant: 1,
   };
 }
 
@@ -50,7 +50,7 @@ export function loadState(): GameState {
     if (!raw) return initialState();
     const s = JSON.parse(raw) as GameState;
     if (s.version !== VERSION || !s.phase || s.levelStats?.length !== LEVELS.length) return initialState();
-    return { ...s, variant: s.variant ?? 0, toast: null };
+    return { ...s, variant: s.variant ?? 1, toast: null };
   } catch {
     return initialState();
   }
@@ -280,7 +280,7 @@ export function reducer(s: GameState, a: Action): GameState {
       return { ...initialState(s.muted), variant: s.variant };
 
     case 'CLEAR_TOAST':
-      return { ...s, variant: s.variant ?? 0, toast: null };
+      return { ...s, variant: s.variant ?? 1, toast: null };
   }
 }
 
@@ -334,14 +334,7 @@ export const heroForSlot = (heroes: Hero[], slot: number) => heroes[slot % Math.
 
 export { powerInfo };
 
-/** Alternate the task set for every new group on this device (first group: set B). */
+/** Every new group plays set B (open day). Set A was the test run – only reachable via the teacher menu. */
 export function nextVariant(): number {
-  const last = localStorage.getItem('hero-variant-last');
-  const v = last === null ? 1 : last === '1' ? 0 : 1;
-  try {
-    localStorage.setItem('hero-variant-last', String(v));
-  } catch {
-    /* ignore */
-  }
-  return v;
+  return 1;
 }
