@@ -14,8 +14,11 @@ const CRATE = 4; // power crate – bump from below
 const USED = 5;
 const STONE = 6;
 const CHIMNEY = 7;
+const SUPER = 8; // golden super power box – a star pops out
 
-const SOLID = new Set([ROOF, WALL, BRICK, CRATE, USED, STONE, CHIMNEY]);
+const SOLID = new Set([ROOF, WALL, BRICK, CRATE, USED, STONE, CHIMNEY, SUPER]);
+const SUPER_TIME = 8;
+const HERO = ['H', 'E', 'R', 'O'];
 
 export interface Input {
   left: boolean;
@@ -58,6 +61,15 @@ interface Core {
   pop?: number; // popping out of a crate
 }
 
+interface Pickup {
+  x: number;
+  y: number;
+  kind: 'star' | 'letter';
+  ch: string;
+  taken: boolean;
+  rise: number; // star: still rising out of the box
+}
+
 interface Particle {
   x: number;
   y: number;
@@ -77,6 +89,10 @@ export interface Hud {
   time: number;
   progress: number;
   mode: 'run' | 'dying' | 'over' | 'win';
+  /** seconds of super power left */
+  superT: number;
+  /** collected letters of H-E-R-O */
+  letters: boolean[];
 }
 
 export class HeroRunGame {
@@ -85,6 +101,7 @@ export class HeroRunGame {
   enemies: Enemy[] = [];
   platforms: Platform[] = [];
   cores: Core[] = [];
+  pickups: Pickup[] = [];
   particles: Particle[] = [];
   checkpoints: number[] = [];
   goalX = 0;
@@ -106,6 +123,12 @@ export class HeroRunGame {
   squash = 0;
   runPhase = 0;
   respawnX = 80;
+  airJumps = 1; // cape jump
+  superT = 0;
+  combo = 0;
+  stompPts = 0;
+  bonus = 0;
+  letters = [false, false, false, false];
 
   lives = 5;
   coreCount = 0;
@@ -166,6 +189,9 @@ export class HeroRunGame {
     const y = ty * T + T - h;
     this.enemies.push({ kind, x, y, w, h, vx: kind === 'bug' ? -55 : 0, vy: 0, baseY: y, phase: Math.random() * 6, dead: 0 });
   }
+  private letter(i: number, tx: number, ty: number) {
+    this.pickups.push({ x: tx * T + T / 2, y: ty * T + T / 2, kind: 'letter', ch: HERO[i], taken: false, rise: 0 });
+  }
   private platform(tx: number, ty: number, wTiles: number, ax: number, ay: number, speed: number) {
     const x = tx * T;
     const y = ty * T;
@@ -195,7 +221,7 @@ export class HeroRunGame {
     this.ground(45, 60);
     this.row(48, 52, 6, BRICK);
     this.set(49, 6, CRATE);
-    this.set(51, 6, CRATE);
+    this.set(51, 6, SUPER);
     this.coinsRow(48, 52, 5 - 1);
     this.enemy('drone', 55, 6);
     this.enemy('bug', 58, 9);
@@ -245,7 +271,7 @@ export class HeroRunGame {
     this.enemy('spike', 147, 11);
     this.ground(149, 170);
     this.row(152, 156, 7, BRICK);
-    this.set(154, 7, CRATE);
+    this.set(154, 7, SUPER);
     this.enemy('bug', 155, 6);
     this.chimney(159, 2);
     this.enemy('bug', 163, 9);
@@ -256,6 +282,12 @@ export class HeroRunGame {
     this.ground(171, this.W - 1);
     this.stairs(173, 6, 1);
     this.goalX = 185 * T;
+
+    // secret letters H-E-R-O (+100 for all four)
+    this.letter(0, 30, 4);
+    this.letter(1, 104, 3);
+    this.letter(2, 110, 2);
+    this.letter(3, 145, 5);
   }
 
   /* ---------------- helpers ---------------- */
@@ -289,7 +321,7 @@ export class HeroRunGame {
   }
 
   get score() {
-    return this.coreCount * 10 + this.stomps * 20 + (this.mode === 'win' ? 200 + Math.max(0, Math.floor(120 - this.time)) * 2 : 0);
+    return this.coreCount * 10 + this.stompPts + this.bonus + (this.mode === 'win' ? 200 + Math.max(0, Math.floor(120 - this.time)) * 2 : 0);
   }
 
   hud(): Hud {
@@ -300,11 +332,13 @@ export class HeroRunGame {
       time: this.time,
       progress: Math.min(1, this.px / this.goalX),
       mode: this.mode,
+      superT: this.superT,
+      letters: [...this.letters],
     };
   }
 
   private hurt() {
-    if (this.invuln > 0 || this.mode !== 'run') return;
+    if (this.invuln > 0 || this.superT > 0 || this.mode !== 'run') return;
     this.lives--;
     this.shake = 0.3;
     this.events.push('hurt');
@@ -318,6 +352,7 @@ export class HeroRunGame {
   }
 
   private die() {
+    this.superT = 0;
     this.mode = 'dying';
     this.dyingT = 0;
     this.vy = -620;
@@ -379,7 +414,13 @@ export class HeroRunGame {
 
     // horizontal
     const accel = this.onGround ? 1500 : 1000;
-    const maxV = 230;
+    const maxV = this.superT > 0 ? 300 : 230;
+    if (this.superT > 0) {
+      this.superT = Math.max(0, this.superT - dt);
+      if (this.superT === 0) this.events.push('superEnd');
+      if (Math.random() < dt * 30)
+        this.particles.push({ x: this.px + Math.random() * this.pw, y: this.py + Math.random() * this.ph, vx: -this.vx * 0.2, vy: -40, life: 0.5, max: 0.5, color: `hsl(${Math.floor(Math.random() * 360)}, 100%, 60%)`, size: 4 + Math.random() * 3 });
+    }
     if (input.left && !input.right) {
       this.vx = Math.max(-maxV, this.vx - accel * dt);
       this.facing = -1;
@@ -395,14 +436,25 @@ export class HeroRunGame {
     this.coyote = this.onGround ? 0.1 : Math.max(0, this.coyote - dt);
     if (input.jump && !this.jumpHeld) this.jumpBuffer = 0.12;
     else this.jumpBuffer = Math.max(0, this.jumpBuffer - dt);
+    if (this.onGround) this.airJumps = 1;
     if (this.jumpBuffer > 0 && this.coyote > 0) {
-      this.vy = -740;
+      this.vy = this.superT > 0 ? -800 : -740;
       this.coyote = 0;
       this.jumpBuffer = 0;
       this.onGround = false;
       this.ridingPlatform = null;
       this.events.push('jump');
       this.burst(this.px + this.pw / 2, this.py + this.ph, '#ffffffaa', 5, 80);
+    } else if (input.jump && !this.jumpHeld && !this.onGround && this.coyote <= 0 && this.airJumps > 0) {
+      // cape jump: a second jump in the air
+      this.airJumps--;
+      this.vy = -640;
+      this.jumpBuffer = 0;
+      this.ridingPlatform = null;
+      this.events.push('jump2');
+      this.floatText(this.px + this.pw / 2, this.py - 6, 'CAPE JUMP!', '#4cc9f0');
+      for (let i = 0; i < 10; i++)
+        this.particles.push({ x: this.px + this.pw / 2 + (Math.random() - 0.5) * 30, y: this.py + this.ph, vx: (Math.random() - 0.5) * 160, vy: 60 + Math.random() * 80, life: 0.45, max: 0.45, color: i % 2 ? '#ffd60a' : '#ffffff', size: 4 });
     }
     if (!input.jump && this.vy < -300) this.vy = -300;
     this.jumpHeld = input.jump;
@@ -418,6 +470,7 @@ export class HeroRunGame {
     this.moveX(this.vx * dt);
     this.moveY(this.vy * dt);
     if (!wasGround && this.onGround) {
+      this.combo = 0;
       this.squash = 1;
       this.burst(this.px + this.pw / 2, this.py + this.ph, '#ffffff88', 6, 70);
     }
@@ -458,6 +511,36 @@ export class HeroRunGame {
         this.coreCount++;
         this.events.push('core');
         this.burst(c.x, c.y, '#ffd60a', 6, 120);
+      }
+    }
+
+    // super star + H-E-R-O letters
+    for (const p of this.pickups) {
+      if (p.taken) continue;
+      if (p.rise > 0) {
+        const step = Math.min(p.rise, 90 * dt);
+        p.rise -= step;
+        p.y -= step;
+        continue;
+      }
+      if (Math.abs(p.x - (this.px + this.pw / 2)) < 28 && Math.abs(p.y - (this.py + this.ph / 2)) < 36) {
+        p.taken = true;
+        if (p.kind === 'star') {
+          this.superT = SUPER_TIME;
+          this.events.push('super');
+          this.floatText(p.x, p.y - 20, 'SUPER POWER!', '#ff006e');
+          this.burst(p.x, p.y, '#ffd60a', 16, 220);
+        } else {
+          const i = HERO.indexOf(p.ch);
+          this.letters[i] = true;
+          this.events.push('letter');
+          this.burst(p.x, p.y, '#39ff14', 12, 160);
+          if (this.letters.every(Boolean)) {
+            this.bonus += 100;
+            this.floatText(p.x, p.y - 24, 'H-E-R-O! +100', '#39ff14');
+            this.events.push('hero');
+          } else this.floatText(p.x, p.y - 20, p.ch + '!', '#39ff14');
+        }
       }
     }
 
@@ -532,7 +615,12 @@ export class HeroRunGame {
         const cx = Math.floor((this.px + this.pw / 2) / T);
         const cy = Math.floor(y / T);
         const hit = SOLID.has(this.tile(cx, cy)) ? cx : SOLID.has(tl) ? Math.floor(left / T) : Math.floor(right / T);
-        if (this.tile(hit, cy) === CRATE) {
+        if (this.tile(hit, cy) === SUPER) {
+          this.set(hit, cy, USED);
+          this.pickups.push({ x: hit * T + T / 2, y: cy * T + T / 2, kind: 'star', ch: '', taken: false, rise: T });
+          this.burst(hit * T + T / 2, cy * T, '#ffd60a', 10, 150);
+          this.events.push('crate');
+        } else if (this.tile(hit, cy) === CRATE) {
           this.set(hit, cy, USED);
           this.cores.push({ x: hit * T + T / 2, y: cy * T, taken: false, pop: 0.45 });
           this.floatText(hit * T + T / 2, cy * T - 10, '+10');
@@ -578,12 +666,26 @@ export class HeroRunGame {
       if (this.mode !== 'run') continue;
       const hit = this.px < e.x + e.w && this.px + this.pw > e.x && this.py < e.y + e.h && this.py + this.ph > e.y;
       if (!hit) continue;
+      if (this.superT > 0) {
+        e.dead = 0.5;
+        this.stomps++;
+        this.stompPts += 20;
+        this.floatText(e.x + e.w / 2, e.y, 'POW! +20', '#ff006e');
+        this.burst(e.x + e.w / 2, e.y + e.h / 2, '#ffd60a', 12, 220);
+        this.shake = 0.15;
+        this.events.push('stomp');
+        continue;
+      }
       const stomp = e.kind !== 'spike' && this.vy > 50 && this.py + this.ph - e.y < 22;
       if (stomp) {
         e.dead = 0.5;
         this.vy = -520;
+        this.airJumps = 1;
         this.stomps++;
-        this.floatText(e.x + e.w / 2, e.y, '+20', '#ff9f1c');
+        this.combo++;
+        const pts = 20 * Math.min(4, this.combo);
+        this.stompPts += pts;
+        this.floatText(e.x + e.w / 2, e.y, this.combo > 1 ? `COMBO x${this.combo}! +${pts}` : '+20', '#ff9f1c');
         this.burst(e.x + e.w / 2, e.y + e.h / 2, e.kind === 'bug' ? '#e63946' : '#39ff14', 10, 180);
         this.events.push('stomp');
       } else this.hurt();
@@ -697,6 +799,9 @@ export class HeroRunGame {
       if (c.taken) continue;
       this.drawCore(ctx, c.x, c.y + Math.sin(now / 250 + c.x) * 3, now);
     }
+
+    // super stars + letters
+    for (const p of this.pickups) if (!p.taken) this.drawPickup(ctx, p, now);
 
     // enemies
     for (const e of this.enemies) this.drawEnemy(ctx, e, now);
@@ -815,6 +920,17 @@ export class HeroRunGame {
         for (const [a, b] of [[5, 5], [T - 8, 5], [5, T - 8], [T - 8, T - 8]]) ctx.fillRect(x + a, y + b, 3, 3);
         break;
       }
+      case SUPER: {
+        const glow = 0.5 + 0.5 * Math.sin(now / 150);
+        ctx.fillStyle = '#ffb703';
+        ctx.fillRect(x, y, T, T);
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.35 + glow * 0.5})`;
+        this.star(ctx, x + T / 2, y + T / 2, 13, 0);
+        ctx.strokeRect(x + 1.5, y + 1.5, T - 3, T - 3);
+        ctx.fillStyle = '#141018';
+        for (const [a, b] of [[5, 5], [T - 8, 5], [5, T - 8], [T - 8, T - 8]]) ctx.fillRect(x + a, y + b, 3, 3);
+        break;
+      }
       case USED: {
         ctx.fillStyle = '#5a5f73';
         ctx.fillRect(x, y, T, T);
@@ -867,6 +983,50 @@ export class HeroRunGame {
     ctx.lineTo(cx + 1 * s, cy - 3 * s);
     ctx.closePath();
     ctx.fill();
+  }
+
+  private star(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, rot: number) {
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) {
+      const a = rot - Math.PI / 2 + (i * Math.PI) / 5;
+      const rr = i % 2 ? r * 0.45 : r;
+      ctx.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  private drawPickup(ctx: CanvasRenderingContext2D, p: Pickup, now: number) {
+    const bob = p.rise > 0 ? 0 : Math.sin(now / 220 + p.x) * 4;
+    ctx.save();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#141018';
+    if (p.kind === 'star') {
+      ctx.fillStyle = `hsla(${(now / 6) % 360}, 100%, 60%, 0.35)`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y + bob, 24, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = `hsl(${(now / 4) % 360}, 100%, 62%)`;
+      this.star(ctx, p.x, p.y + bob, 17, Math.sin(now / 300) * 0.3);
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = '#39ff1444';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y + bob, 20 + Math.sin(now / 200) * 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#39ff14';
+      this.roundRect(ctx, p.x - 17, p.y + bob - 19, 34, 38, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#141018';
+      ctx.font = '900 22px Nunito, Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.ch, p.x, p.y + bob + 2);
+      ctx.textBaseline = 'alphabetic';
+      ctx.textAlign = 'left';
+    }
+    ctx.restore();
   }
 
   private drawCore(ctx: CanvasRenderingContext2D, x: number, y: number, now: number) {
@@ -1049,6 +1209,17 @@ export class HeroRunGame {
     const h = 80;
     const cx = this.px + this.pw / 2;
     const by = this.py + this.ph + 2;
+    if (this.superT > 0 && (this.superT > 2 || Math.floor(now / 120) % 2 === 0)) {
+      // rainbow super aura (blinks in the last 2 seconds)
+      const gr = ctx.createRadialGradient(cx, by - 40, 10, cx, by - 40, 66);
+      gr.addColorStop(0, `hsla(${(now / 3) % 360}, 100%, 65%, 0.95)`);
+      gr.addColorStop(0.6, `hsla(${(now / 3 + 60) % 360}, 100%, 60%, 0.5)`);
+      gr.addColorStop(1, `hsla(${(now / 3 + 120) % 360}, 100%, 60%, 0)`);
+      ctx.fillStyle = gr;
+      ctx.beginPath();
+      ctx.arc(cx, by - 40, 66, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.save();
     if (this.mode === 'win') ctx.globalAlpha = Math.max(0, 1 - this.doorT * 2.5);
     ctx.translate(cx, by);

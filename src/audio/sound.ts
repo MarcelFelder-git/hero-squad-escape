@@ -82,6 +82,13 @@ export const sfx = {
   jump() {
     tone({ freq: 330, to: 880, dur: 0.14, type: 'square', vol: 0.05 });
   },
+  capeJump() {
+    tone({ freq: 520, to: 1040, dur: 0.14, type: 'triangle', vol: 0.07 });
+    noise(0.1, 0.03, 0, 2500);
+  },
+  superStar() {
+    [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => tone({ freq: f, dur: 0.09, type: 'square', vol: 0.05, delay: i * 0.07 }));
+  },
   coin() {
     tone({ freq: 988, dur: 0.06, type: 'square', vol: 0.05 });
     tone({ freq: 1319, dur: 0.18, type: 'square', vol: 0.05, delay: 0.06 });

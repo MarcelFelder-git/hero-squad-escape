@@ -89,6 +89,11 @@ export function HeroRun({ heroes, onClose, onScore, best }: { heroes: Hero[]; on
         g.update(dt, input.current);
         for (const ev of g.events) {
           if (ev === 'jump') sfx.jump();
+          else if (ev === 'jump2') sfx.capeJump();
+          else if (ev === 'super') sfx.superStar();
+          else if (ev === 'superEnd') sfx.powerDown();
+          else if (ev === 'letter') sfx.select();
+          else if (ev === 'hero') sfx.superStar();
           else if (ev === 'core' || ev === 'crate') sfx.coin();
           else if (ev === 'stomp') sfx.stomp();
           else if (ev === 'bump') sfx.bump();
@@ -145,6 +150,12 @@ export function HeroRun({ heroes, onClose, onScore, best }: { heroes: Hero[]; on
             <span className="run-lives">{'❤️'.repeat(Math.max(0, hud.lives))}{'🖤'.repeat(Math.max(0, 5 - hud.lives))}</span>
             <span>⚡ {hud.cores}</span>
             <span>★ {score}</span>
+            <span className="run-letters" aria-label="H-E-R-O letters">
+              {['H', 'E', 'R', 'O'].map((ch, i) => (
+                <i key={ch} className={hud.letters[i] ? 'on' : ''}>{ch}</i>
+              ))}
+            </span>
+            {hud.superT > 0 && <span className="run-super">⭐ SUPER {Math.ceil(hud.superT)}</span>}
             <span className="run-progress" aria-label="progress">
               <i style={{ width: `${Math.round(hud.progress * 100)}%` }} />
               <em style={{ left: `${Math.round(hud.progress * 100)}%` }}>🦸</em>
@@ -183,9 +194,12 @@ export function HeroRun({ heroes, onClose, onScore, best }: { heroes: Hero[]; on
                 <div className="run-howto">
                   <span>◀ ▶ run</span>
                   <span>JUMP = jump</span>
+                  <span>JUMP again in the air = 🦸 cape jump</span>
                   <span>🐞 jump on bugs</span>
                   <span>⚡ collect power</span>
                   <span>🟪 hit power boxes from below</span>
+                  <span>🟨 ⭐ golden box = SUPER POWER</span>
+                  <span>find the secret letters H · E · R · O</span>
                 </div>
               </>
             )}

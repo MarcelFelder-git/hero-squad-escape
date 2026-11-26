@@ -3111,3 +3111,18 @@ svg.is-flying {
 .bulb.on { filter: drop-shadow(0 0 6px #ffd60a); }
 .gap-options { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .gap-opt { border: 3px solid var(--ink); border-radius: 12px; padding: 8px 20px; background: #fff; font-size: 1.15rem; font-weight: 900; min-height: 48px; box-shadow: 2px 2px 0 var(--ink); }
+
+/* Hero Run: H-E-R-O letters + super power */
+.run-letters { display: inline-flex; gap: 3px; }
+.run-letters i { font-style: normal; font-family: var(--font-comic); width: 22px; text-align: center; border-radius: 5px; background: #ffffff22; color: #ffffff66; }
+.run-letters i.on { background: #39ff14; color: #141018; animation: pop-in 0.3s; }
+.run-super { font-weight: 900; color: #fff; padding: 0 10px; border-radius: 10px; background: linear-gradient(90deg, #ff006e, #ffd60a, #39ff14, #4cc9f0, #7b2cbf); background-size: 300% 100%; animation: run-rainbow 1s linear infinite; text-shadow: 0 1px 2px #000; }
+@keyframes run-rainbow { to { background-position: 300% 0; } }
+.run-top > * { white-space: nowrap; flex-shrink: 0; }
+.run-top > .run-progress { flex-shrink: 1; min-width: 60px; }
+@media (max-width: 900px) {
+  .run-top { gap: 9px; font-size: 1rem; padding-left: 10px; padding-right: 10px; }
+  .run-top > b { display: none; }
+  .run-lives { letter-spacing: 0; }
+  .run-letters i { width: 18px; }
+}
