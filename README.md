@@ -34,15 +34,15 @@ Keine der Überraschungen kommt im Spiel vor (Hack und Anruf bleiben fürs iPad 
 | Level | Thema | Aufgaben | Belohnung |
 |---|---|---|---|
 | 1 · The ID Lab | Wortschatz | Kabel verbinden · Spion finden · **Vocab Blitz** EN→DE mit Combo | 🎭 Maske |
-| 2 · Power Generator | Simple present | Grammar bugs · Sätze bauen | 🦸 Anzug |
-| 3 · Hero Radio 101.5 | Listening | **Überraschung: Tablet gehackt!** Bugs zerdrücken · Radio-Show: true / false / not in the text | 🧤 Handschuhe |
+| 2 · Power Generator | Simple past | Grammar bugs · Sätze bauen | 🦸 Anzug |
+| 3 · Hero Radio 101.5 | Simple past: Fragen & Kurzantworten | **Überraschung: Tablet gehackt!** Bugs zerdrücken · **Stumme Radio-Show** (der Glitch hat den Ton geklaut): pro Anrufer die richtige Antwort im Chat wählen, dann true / false / not in the text – ganz ohne Ton, damit 15 iPads nicht durcheinander reden | 🧤 Handschuhe |
 | 4 · Time Vault | Simple past | Tresor · Tagebuch · **Fragemaschine** (Fragen aus Stichwörtern) | 🥾 Stiefel |
-| 5 · Lights Out! | Reading | **Überraschung: Videoanruf vom Glitch → Stromausfall.** Lesen mit Finger-Taschenlampe, Lückenwörter im Text antippen | 🔋 Gürtel |
+| 5 · Lights Out! | Reading | **Überraschung: Videoanruf vom Glitch → Stromausfall.** Lesen mit Finger-Taschenlampe, pro Lückensatz das richtige Wort aus 3 wählen – gefundene Wörter leuchten im Dunkeln, jede richtige Antwort macht ein Licht an | 🔋 Gürtel |
 | 6 · Radio Room | Question words | Fragewörter · Funkfrequenz | 🧣 Cape |
 | 7 · Vocab Academy | Wortschatz | **Vocab Blitz** DE→EN · **Spelling Lab** · **Brief-Lückentext** mit Wortkasten | ⚡ Superkraft |
-| 8 · Main Gate | alles | Endkampf · **Wendung: Glitch wird Freund** · **Helden-Steckbrief** (he/she/they, has/have, is/are) · Passwort TEAM | 🚀 Fliegen |
+| 8 · The Final Showdown | alles | Endkampf · **Wendung: Glitch wird Freund** · **Helden-Steckbrief** (he/she/they, has/have, is/are) · offizieller Endscreen | 🚀 Fliegen |
 
-Die neuen Aufgaben üben die **Formate** der Klassenarbeit Unit 2 (Hören true/false/not in the text, Lesen mit Lücken,
+Die neuen Aufgaben üben die **Formate** der Klassenarbeit Unit 2 (true/false/not in the text, Lesen mit Lücken,
 Simple-past-Fragen aus Stichwörtern, Personenbeschreibung) – mit komplett neuen Inhalten.
 Nur Vokabeln aus der Vokabelliste.
 

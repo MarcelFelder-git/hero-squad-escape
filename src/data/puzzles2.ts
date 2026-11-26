@@ -47,26 +47,49 @@ export const SPELLING: { de: string; en: string }[] = [
   { de: 'retten', en: 'SAVE' },
 ];
 
-/* ---------- Listening: Hero Radio "My best friend" show ---------- */
+/* ---------- Hero Radio: the silent interview (no audio – 15 iPads in one room!) ---------- */
 export type TFN = 'true' | 'false' | 'not';
 
-export interface Caller {
+export interface InterviewLine {
+  /** Echo, the radio host, asks */
+  q: string;
+  /** the caller's possible answers – the FIRST one is correct */
+  options: string[];
+}
+
+export interface Interview {
   name: string;
-  pitch: number;
-  rate: number;
   color: string;
-  text: string;
+  lines: InterviewLine[];
   statements: { s: string; a: TFN }[];
 }
 
-export const CALLERS: Caller[] = [
+export const INTERVIEWS: Interview[] = [
   {
     name: 'Lily',
-    pitch: 1.35,
-    rate: 0.9,
     color: '#ff4fa3',
-    text:
-      "Hi, I'm Lily. My best friend is Omar. He's really funny – he always makes me laugh. Last week I was ill, so Omar came to my house and brought me my homework. He's so reliable!",
+    lines: [
+      {
+        q: 'Hi Lily! Who is your best friend?',
+        options: [
+          "My best friend is Omar. He's really funny!",
+          "My best friend are Omar. He's really funny!",
+          'My best friend is Omar. He really funny!',
+        ],
+      },
+      {
+        q: 'What did Omar do last week?',
+        options: [
+          'I was ill, so he brought me my homework.',
+          'I was ill, so he bringed me my homework.',
+          'I am ill, so he brings me my homework.',
+        ],
+      },
+      {
+        q: 'Did he stay at your house?',
+        options: ['Yes, he did. We laughed a lot!', 'Yes, he was. We laughed a lot!', 'Yes, he stayed. We laugh a lot!'],
+      },
+    ],
     statements: [
       { s: 'Omar is a funny person.', a: 'true' },
       { s: 'Omar brought Lily a cake.', a: 'false' },
@@ -74,40 +97,68 @@ export const CALLERS: Caller[] = [
   },
   {
     name: 'Noah',
-    pitch: 0.85,
-    rate: 0.9,
     color: '#4cc9f0',
-    text:
-      "Hello, I'm Noah. My friend Mia is very sporty. She plays basketball in a team, and she trains three times a week. She isn't very tall, but she's really fast. I'm not sporty at all, but Mia is always patient with me.",
-    statements: [
-      { s: 'Mia plays basketball once a week.', a: 'false' },
-      { s: 'Mia is patient with Noah.', a: 'true' },
-      { s: "Mia's team won a match last weekend.", a: 'not' },
+    lines: [
+      {
+        q: 'Hello Noah! Tell us about your best friend.',
+        options: [
+          'My friend Mia is very sporty. She plays basketball.',
+          'My friend Mia is very sporty. She play basketball.',
+          'My friend Mia very sporty. She plays basketball.',
+        ],
+      },
+      {
+        q: 'Did her team win last weekend?',
+        options: ["No, it didn't. But Mia wasn't sad.", "No, it didn't won. But Mia wasn't sad.", "No, it doesn't. But Mia isn't sad."],
+      },
+      {
+        q: 'Why is Mia a good friend?',
+        options: [
+          "I'm not sporty, but she is always patient with me.",
+          "I'm not sporty, but she are always patient with me.",
+          "I'm not sporty, but she always is patient with me.",
+        ],
+      },
     ],
-  },
-  {
-    name: 'Ella',
-    pitch: 1.15,
-    rate: 0.88,
-    color: '#2ecc71',
-    text:
-      "Hi, it's Ella. My best friend is Sam. We grew up in the same street. Sam is a bit shy at school, but at home he's very confident. He loves animals – he has two cats and a dog.",
     statements: [
-      { s: 'Ella and Sam grew up in the same street.', a: 'true' },
-      { s: 'Sam is shy at home.', a: 'false' },
-      { s: "Sam's dog is called Rocket.", a: 'not' },
+      { s: 'Mia plays basketball.', a: 'true' },
+      { s: "Mia's team won last weekend.", a: 'false' },
+      { s: 'Mia is very tall.', a: 'not' },
     ],
   },
   {
     name: 'Jamal',
-    pitch: 0.95,
-    rate: 0.92,
     color: '#ff9f1c',
-    text:
-      "I'm Jamal. My friend Zoe is very hard-working. She helps me with my English homework every Monday. Yesterday we went to the cinema together and watched a superhero film. It was great!",
+    lines: [
+      {
+        q: 'Hi Jamal! What did you do yesterday?',
+        options: [
+          'I went to the cinema with my friend Zoe.',
+          'I goed to the cinema with my friend Zoe.',
+          'I go to the cinema with my friend Zoe.',
+        ],
+      },
+      {
+        q: 'What did you watch?',
+        options: [
+          'We watched a superhero film. It was great!',
+          'We watch a superhero film. It was great!',
+          'We did watched a superhero film. It was great!',
+        ],
+      },
+      {
+        q: 'Is Zoe a good friend?',
+        options: [
+          'Yes! She helps me with my English homework every Monday.',
+          'Yes! She help me with my English homework every Monday.',
+          'Yes! She is helps me with my English homework every Monday.',
+        ],
+      },
+    ],
     statements: [
+      { s: 'Jamal and Zoe went to the cinema yesterday.', a: 'true' },
       { s: 'Zoe helps Jamal with his maths homework.', a: 'false' },
-      { s: 'Yesterday they watched a film.', a: 'true' },
+      { s: 'Zoe has a dog.', a: 'not' },
     ],
   },
 ];
@@ -150,15 +201,16 @@ export const STORY: string[] = [
   'In the evening, his friend Nova called him. "Don\'t be sad," she said. "Everybody makes mistakes. You saved three people last week, remember? You\'re brave and kind. That\'s what makes a hero." Captain Comet smiled. "You\'re right, Nova. You\'re a real friend."',
 ];
 
-export const READING_GAPS: { before: string; after: string; answer: string }[] = [
-  { before: "Captain Comet woke up late because his alarm clock didn't", after: '.', answer: 'ring' },
-  { before: "He couldn't fly because his cape was", after: '.', answer: 'wet' },
-  { before: 'So he took the', after: '.', answer: 'bus' },
-  { before: 'A little girl looked at him and', after: '.', answer: 'laughed' },
-  { before: 'At lunchtime, he dropped all the', after: '.', answer: 'eggs' },
-  { before: 'In the evening, his friend', after: 'called him.', answer: 'Nova' },
-  { before: 'Nova says: "Everybody makes', after: '."', answer: 'mistakes' },
-  { before: 'Nova thinks Captain Comet is brave and', after: '.', answer: 'kind' },
+/** options: the FIRST one is correct (it is also the word that glows in the story) */
+export const READING_GAPS: { before: string; after: string; options: string[] }[] = [
+  { before: "Captain Comet woke up late because his alarm clock didn't", after: '.', options: ['ring', 'fly', 'smile'] },
+  { before: "He couldn't fly because his cape was", after: '.', options: ['wet', 'red', 'new'] },
+  { before: 'So he took the', after: '.', options: ['bus', 'train', 'car'] },
+  { before: 'A little girl looked at him and', after: '.', options: ['laughed', 'smiled', 'helped'] },
+  { before: 'At lunchtime, he dropped all the', after: '.', options: ['eggs', 'apples', 'books'] },
+  { before: 'In the evening, his friend', after: 'called him.', options: ['Nova', 'Leo', 'Mia'] },
+  { before: 'Nova says: "Everybody makes', after: '."', options: ['mistakes', 'friends', 'pancakes'] },
+  { before: 'Nova thinks Captain Comet is brave and', after: '.', options: ['kind', 'funny', 'fast'] },
 ];
 
 /* ---------- Gap text with word box (one extra word) ---------- */

@@ -8,7 +8,7 @@ export type StageKind =
   | 'vocab1'
   | 'bughunt'
   | 'builder'
-  | 'listening'
+  | 'interview'
   | 'vault'
   | 'diary'
   | 'questions'
@@ -165,23 +165,26 @@ export const LEVELS: LevelMeta[] = [
     id: 'studio',
     name: 'Hero Radio 101.5',
     nameDe: 'Das Radio-Studio',
-    topic: 'Listening',
+    topic: 'Simple past: questions & answers',
     color: '#c77dff',
     scene: 'studio',
     event: 'hack',
-    glitchTaunt: 'I hacked your screens! But can you hack your EARS? Listen to the radio show… if you can!',
+    glitchTaunt: 'Bzzzt! I stole the SOUND of Hero Radio! Now the show is silent – and I mixed up all the answers. Mwahaha!',
     stages: [
       {
-        kind: 'listening',
-        grammar: { topic: 'Listening: true, false or not in the text?', rule: 'Read the sentences first – then listen for names and details.' },
-        title: 'The "My best friend" show',
-        instruction: 'Listen to the callers. Is it true, false or not in the text?',
-        instructionDe: 'Hör zu. Ist die Aussage richtig (true), falsch (false) oder kommt sie nicht vor?',
+        kind: 'interview',
+        grammar: {
+          topic: 'Simple past: questions and short answers',
+          rule: "Did you …? – Yes, I did. / No, I didn't. · What did you do? – I went … · after did / didn't: normal verb",
+        },
+        title: 'The silent radio show',
+        instruction: 'The Glitch stole the sound! Choose the right answer for every caller. Then: true, false or not in the text?',
+        instructionDe: 'Der Glitch hat den Ton geklaut! Wählt die richtige Antwort der Anrufer. Danach: richtig, falsch oder steht nicht drin?',
         hints: [
-          'Read the sentences first. Then listen. You can play every caller again!',
-          '"not in the text" = the caller says NOTHING about it. After 2 plays you can read the text.',
+          'Look at the question: Did …? → Yes, … did. / No, … didn\'t. · yesterday / last week → simple past!',
+          '"not in the text" = the interview says NOTHING about it. Read the chat again!',
         ],
-        team: roles3('reads the sentences before listening.', 'listens for names and numbers.', 'taps the answers.'),
+        team: roles3("reads Echo's question.", 'reads the answers – quietly! 🤫', 'finds the mistakes and taps.'),
       },
     ],
   },
@@ -246,13 +249,13 @@ export const LEVELS: LevelMeta[] = [
         kind: 'reading',
         grammar: { topic: 'Reading: a story in the simple past', rule: 'The story happened yesterday – look for the past forms: was, laughed, said …' },
         title: 'Read in the dark',
-        instruction: 'Move your finger over the page – it is a torch! Then tap the missing words IN THE TEXT.',
-        instructionDe: 'Dein Finger ist eine Taschenlampe! Tippe die fehlenden Wörter direkt im Text an.',
+        instruction: 'Move your finger over the page – it is a torch! Find the answer in the story and choose the missing word.',
+        instructionDe: 'Dein Finger ist eine Taschenlampe! Sucht die Stelle in der Geschichte und wählt das fehlende Wort.',
         hints: [
-          'Read the sentence with the gap first. Then look for the same words in the story.',
+          'Read the sentence with the gap first. Then look for the same words in the story – with your torch!',
           'ring · wet · bus · laughed · eggs · Nova · mistakes · kind',
         ],
-        team: roles3('holds the torch and reads.', 'reads the sentence with the gap.', 'taps the word.'),
+        team: roles3('holds the torch and reads.', 'reads the sentence with the gap.', 'chooses the word.'),
       },
     ],
   },

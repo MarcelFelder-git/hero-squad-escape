@@ -23,7 +23,7 @@ import { FrequencyCode } from '../puzzles/FrequencyCode';
 import { BossBattle } from '../puzzles/BossBattle';
 import { VocabBlitzEnDe, VocabBlitzDeEn } from '../puzzles/VocabBlitz';
 import { VocabSpell } from '../puzzles/VocabSpell';
-import { ListeningShow } from '../puzzles/ListeningShow';
+import { RadioInterview } from '../puzzles/RadioInterview';
 import { QuestionMachine } from '../puzzles/QuestionMachine';
 import { LightsOut } from '../puzzles/LightsOut';
 import { GapText } from '../puzzles/GapText';
@@ -36,7 +36,7 @@ const PUZZLES: Record<StageKind, ComponentType<PuzzleProps>> = {
   vocab1: VocabBlitzEnDe,
   bughunt: BugHunt,
   builder: SentenceBuilder,
-  listening: ListeningShow,
+  interview: RadioInterview,
   vault: VerbVault,
   diary: DiaryGaps,
   questions: QuestionMachine,
