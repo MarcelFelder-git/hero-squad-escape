@@ -15,7 +15,7 @@ const WORD_KEY = READING_GAPS.map((gp) => {
   return '';
 });
 
-/** Reading in the dark: the finger is a torch; the missing word is chosen from 3 – every right answer switches a light on. */
+/** Reading in the dark: the finger is a torch; every right word is one part of the fuse – the lights only come back at the end. */
 export function LightsOut({ onCorrect, onWrong, onSolved }: PuzzleProps) {
   const [g, setG] = useState(0);
   const [bad, setBad] = useState<string[]>([]);
@@ -55,10 +55,12 @@ export function LightsOut({ onCorrect, onWrong, onSolved }: PuzzleProps) {
   return (
     <div className="lights-out">
       <div className="gap-card">
-        <div className="bulbs" aria-label={`${g} of ${READING_GAPS.length} lights on`}>
+        <div className="fuse-box" aria-label={`${g} of ${READING_GAPS.length} fuse parts`}>
+          <span className="fuse-label">🔌 Fuse box</span>
           {READING_GAPS.map((_, k) => (
-            <span key={k} className={`bulb ${k < g ? 'on' : ''}`}>💡</span>
+            <i key={k} className={`fuse ${k < g ? 'on' : ''}`} />
           ))}
+          <span className="fuse-count">{done ? '💡 ON!' : `${g}/${READING_GAPS.length}`}</span>
         </div>
         {!done ? (
           <>
@@ -87,7 +89,6 @@ export function LightsOut({ onCorrect, onWrong, onSolved }: PuzzleProps) {
           ['--x' as string]: `${pos.x}%`,
           ['--y' as string]: `${pos.y}%`,
           ['--r' as string]: `${radius}px`,
-          ['--dark' as string]: String(0.93 - g * 0.025),
         }}
       >
         <h3 className="story-title">{STORY_TITLE}</h3>

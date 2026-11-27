@@ -1064,9 +1064,6 @@
   font-size: inherit;
 }
 .story-word.found {
-  position: relative;
-  z-index: 2;
-  box-shadow: 0 0 14px 4px #2ecc71aa;
   background: #2ecc71;
   color: #fff;
   font-weight: 800;
@@ -3105,10 +3102,12 @@ svg.is-flying {
 .chat-ask { font-weight: 900; font-size: 1.05rem; }
 .chat-opt { text-align: left; border: 3px solid var(--ink); border-radius: 12px; padding: 10px 14px; background: #fff; font-size: 1.08rem; font-weight: 700; min-height: 48px; box-shadow: 2px 2px 0 var(--ink); }
 .chat-opt.bad, .gap-opt.bad { opacity: 0.35; text-decoration: line-through; animation: shake 0.4s; }
-/* lights out: word choice + bulbs */
-.bulbs { display: flex; gap: 4px; justify-content: center; }
-.bulb { filter: grayscale(1) brightness(0.5); font-size: 1.3rem; transition: filter 0.4s; }
-.bulb.on { filter: drop-shadow(0 0 6px #ffd60a); }
+/* lights out: word choice + fuse box */
+.fuse-box { display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; font-weight: 900; }
+.fuse-label { margin-right: 4px; }
+.fuse { width: 14px; height: 26px; border: 3px solid var(--ink); border-radius: 4px; background: repeating-linear-gradient(180deg, #adb5bd 0 4px, #6c757d 4px 8px); opacity: 0.35; }
+.fuse.on { opacity: 1; background: linear-gradient(180deg, #ffd60a, #ff9f1c); box-shadow: 0 0 8px #ffd60a; animation: pop-in 0.3s; }
+.fuse-count { margin-left: 4px; }
 .gap-options { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .gap-opt { border: 3px solid var(--ink); border-radius: 12px; padding: 8px 20px; background: #fff; font-size: 1.15rem; font-weight: 900; min-height: 48px; box-shadow: 2px 2px 0 var(--ink); }
 

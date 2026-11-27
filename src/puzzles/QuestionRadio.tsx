@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import type { PuzzleProps } from '../game/types';
 import { QUESTION_WORDS, RADIO_ITEMS, type QuestionWord } from '../data/puzzles';
-import { SpeakButton } from '../components/ui';
+import { SpeakButton, shuffle } from '../components/ui';
 
 export function QuestionRadio({ onCorrect, onWrong, onSolved }: PuzzleProps) {
   const [i, setI] = useState(0);
   const [bad, setBad] = useState<QuestionWord[]>([]);
   const [solved, setSolved] = useState(false);
-  const item = RADIO_ITEMS[i];
+  // mixed order – otherwise the answers come as Who, What, Where, When … like the buttons
+  const [items] = useState(() => {
+    let s = shuffle(RADIO_ITEMS);
+    for (let k = 0; k < 5 && s.some((it, j) => it.correct === RADIO_ITEMS[j].correct); k++) s = shuffle(RADIO_ITEMS);
+    return s;
+  });
+  const item = items[i];
 
   const pick = (w: QuestionWord) => {
     if (solved || bad.includes(w)) return;

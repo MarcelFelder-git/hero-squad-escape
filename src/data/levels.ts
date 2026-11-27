@@ -249,8 +249,8 @@ export const LEVELS: LevelMeta[] = [
         kind: 'reading',
         grammar: { topic: 'Reading: a story in the simple past', rule: 'The story happened yesterday – look for the past forms: was, laughed, said …' },
         title: 'Read in the dark',
-        instruction: 'Move your finger over the page – it is a torch! Find the answer in the story and choose the missing word.',
-        instructionDe: 'Dein Finger ist eine Taschenlampe! Sucht die Stelle in der Geschichte und wählt das fehlende Wort.',
+        instruction: 'Move your finger over the page – it is a torch! Find the answer in the story and choose the missing word. Every right word repairs a part of the fuse box.',
+        instructionDe: 'Dein Finger ist eine Taschenlampe! Sucht die Stelle in der Geschichte und wählt das fehlende Wort. Jedes richtige Wort repariert ein Stück vom Sicherungskasten.',
         hints: [
           'Read the sentence with the gap first. Then look for the same words in the story – with your torch!',
           'ring · wet · bus · laughed · eggs · Nova · mistakes · kind',

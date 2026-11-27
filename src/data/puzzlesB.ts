@@ -14,8 +14,8 @@ import type {
 export const WIRE_PAIRS_B = [
   { en: 'sunglasses', de: 'die Sonnenbrille' },
   { en: 'straight', de: 'glatt' },
-  { en: 'left', de: 'links' },
-  { en: 'right', de: 'rechts' },
+  { en: 'curly', de: 'lockig' },
+  { en: 'moon', de: 'der Mond' },
   { en: 'mistake', de: 'der Fehler' },
   { en: 'hero', de: 'der Held' },
 ];
@@ -33,14 +33,14 @@ export const SPY_ROUNDS_B: SpyRound[] = [
     ],
   },
   {
-    pronoun: 'He',
-    report: ['The second spy is tall.', 'He has straight, brown hair.', "He doesn't wear glasses,", 'but he wears braces.'],
+    pronoun: 'She',
+    report: ['The second spy is tall, too.', 'She has straight, brown hair.', "She doesn't wear glasses,", 'but she wears braces.'],
     answer: 'o',
     suspects: [
-      { id: 'm', name: 'Sam', tall: true, hairStyle: 'straight', hair: '#a0522d', glasses: true, braces: true, skin: '#f6c9a0', shirt: '#14b8a6' },
-      { id: 'n', name: 'Jack', tall: false, hairStyle: 'straight', hair: '#a0522d', glasses: false, braces: true, skin: '#ffe0c7', shirt: '#e63946' },
-      { id: 'o', name: 'Omar', tall: true, hairStyle: 'straight', hair: '#a0522d', glasses: false, braces: true, skin: '#8d5524', shirt: '#ec4899' },
-      { id: 'p', name: 'Ben', tall: true, hairStyle: 'curly', hair: '#a0522d', glasses: false, braces: true, skin: '#e0a878', shirt: '#ffd60a' },
+      { id: 'm', name: 'Mia', tall: true, hairStyle: 'straight', hair: '#a0522d', glasses: true, braces: true, skin: '#f6c9a0', shirt: '#14b8a6' },
+      { id: 'n', name: 'Zoe', tall: false, hairStyle: 'straight', hair: '#a0522d', glasses: false, braces: true, skin: '#ffe0c7', shirt: '#e63946' },
+      { id: 'o', name: 'Lena', tall: true, hairStyle: 'straight', hair: '#a0522d', glasses: false, braces: true, skin: '#8d5524', shirt: '#ec4899' },
+      { id: 'p', name: 'Emma', tall: true, hairStyle: 'curly', hair: '#a0522d', glasses: false, braces: true, skin: '#e0a878', shirt: '#ffd60a' },
     ],
   },
 ];
@@ -168,7 +168,7 @@ export const BOSS_QUESTIONS_B: BossQuestion[] = [
 
 /** hints that mention set-A answers get a set-B version */
 export const HINTS_B: Record<string, [string, string]> = {
-  wires: ['"links" and "left" both start with L!', 'sunglasses = Sonnenbrille · straight = glatt · mistake = Fehler · right = rechts'],
+  wires: ['Two words are about hair: straight and curly. Which one is "glatt"?', 'sunglasses = Sonnenbrille · straight = glatt · curly = lockig · moon = Mond'],
   bughunt: [
     'Look at the verbs! yesterday / last … → you need the simple past.',
     "swim → swam · Did … finish? · didn't go · the Glitch → was · yesterday → saved",
